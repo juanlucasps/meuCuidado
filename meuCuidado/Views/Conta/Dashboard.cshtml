@@ -1,0 +1,23 @@
+﻿@using meuCuidado.Models
+
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<h2>Dashboard</h2>
+
+@if (ViewBag.UsuariosParaExibir != null && ViewBag.UsuariosParaExibir.Any())
+{
+    <ul>
+        @foreach (var usuario in ViewBag.UsuariosParaExibir as IEnumerable<Pessoa>)
+        {
+            <li>
+                @usuario.Nome - @usuario.Email
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Nenhum usuário para exibir.</p>
+}

@@ -1,0 +1,48 @@
+﻿@model meuCuidado.Models.Pessoa
+
+@{
+    ViewBag.Title = "Cadastro";
+}
+
+<h2>Cadastro</h2>
+
+@using (Html.BeginForm())
+{
+    @*@Html.AntiForgeryToken()*@
+
+    <div class="form-group">
+        @Html.Label("Nome")
+        @Html.TextBoxFor(m => m.Nome, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.Label("CPF")
+        @Html.TextBoxFor(m => m.CPF, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.Label("Endereco")
+        @Html.TextBoxFor(m => m.Endereco, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.Label("Telefone")
+        @Html.TextBoxFor(m => m.Telefone, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.Label("Email")
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.Label("Senha")
+        @Html.PasswordFor(m => m.Senha, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="TipoUsuario">Tipo de Usuário</label>
+        @Html.DropDownList("TipoUsuario", new SelectList(new[] { "Idoso", "Cuidador", "Fisioterapeuta", "Familiar" }), new { @class = "form-control" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Cadastrar</button>
+}
+
+<p>
+    Já tem uma conta? <a href="@Url.Action("Login", "Conta")">Faça login aqui</a>
+</p>

@@ -1,0 +1,17 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+}
+
+<h2>Dashboard</h2>
+
+@if (ViewBag.UsuariosParaExibir != null)
+{
+    <div class="list-group">
+        @foreach (var usuario in ViewBag.UsuariosParaExibir as IEnumerable<meuCuidado.Models.Pessoa>)
+        {
+            <a href="@Url.Action("Perfil", new { id = usuario.Id })" class="list-group-item list-group-item-action">
+                @usuario.Nome
+            </a>
+        }
+    </div>
+}
