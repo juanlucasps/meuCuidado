@@ -71,6 +71,12 @@
     <Reference Include="Microsoft.Owin.Security.Cookies, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.Security.Cookies.4.2.2\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Owin.Security.Facebook, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.4.2.2\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.4.2.2\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin.Security.OAuth, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
     </Reference>
@@ -152,6 +158,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ChallengeResult.cs" />
     <Compile Include="Controllers\ContaController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -161,15 +168,23 @@
     <Compile Include="Migrations\202409070055456_InitialCreate.designer.cs">
       <DependentUpon>202409070055456_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202409282221045_NomeDaNovaMigracao.cs" />
+    <Compile Include="Migrations\202409282221045_NomeDaNovaMigracao.designer.cs">
+      <DependentUpon>202409282221045_NomeDaNovaMigracao.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\AplicacaoDbContext.cs" />
+    <Compile Include="Models\MeuCuidadoDbContext.cs" />
+    <Compile Include="Models\Avaliacao.cs" />
     <Compile Include="Models\CuidadorDeIdoso.cs" />
-    <Compile Include="Models\CuidadorIdoso.cs" />
-    <Compile Include="Models\Familiar.cs" />
+    <Compile Include="Models\Lembrete.cs" />
+    <Compile Include="Models\Medicamento.cs" />
+    <Compile Include="Models\Medico.cs" />
+    <Compile Include="Models\ProfissionalValidacao.cs" />
+    <Compile Include="Models\RelacionamentoIdosoProfissional.cs" />
+    <Compile Include="Models\Tutor.cs" />
     <Compile Include="Models\Fisioterapeuta.cs" />
-    <Compile Include="Models\FisioterapeutaIdoso.cs" />
     <Compile Include="Models\Idoso.cs" />
-    <Compile Include="Models\Pessoa.cs" />
+    <Compile Include="Models\Usuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -266,6 +281,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202409070055456_InitialCreate.resx">
       <DependentUpon>202409070055456_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202409282221045_NomeDaNovaMigracao.resx">
+      <DependentUpon>202409282221045_NomeDaNovaMigracao.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

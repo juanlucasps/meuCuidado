@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace meuCuidado.Models
 {
-    public class Fisioterapeuta : Pessoa
+    [Table("meuCuidado_Fisioterapeuta")]
+    public class Fisioterapeuta : Usuario
     {
-        [Required]
-        public string RegistroProfissional { get; set; }
-        public ICollection<FisioterapeutaIdoso> IdososCadastrados { get; set; }
+        public virtual RelacionamentoIdosoProfissional RelacionamentoIdosoProfissional { get; set; }
     }
 }

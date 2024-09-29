@@ -12,11 +12,12 @@ namespace meuCuidado.Controllers
 {
     public class ContaController : Controller
     {
-        private readonly AplicacaoDbContext _context = new AplicacaoDbContext();
+        private readonly MeuCuidadoDbContext _context = new MeuCuidadoDbContext();
 
         // Tela de Login
-        public ActionResult Login()
+        public ActionResult Login(string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
@@ -30,76 +31,132 @@ namespace meuCuidado.Controllers
         public ActionResult Dashboard()
         {
             var usuarioLogado = User.Identity.Name;
-            var pessoa = _context.Pessoas.SingleOrDefault(p => p.Email == usuarioLogado);
+            //var pessoa = _context.Usuarios.SingleOrDefault(p => p.Email == usuarioLogado);
 
-            if (pessoa == null)
-            {
-                return RedirectToAction("Login");
-            }
+            //if (pessoa == null)
+            //{
+            //    return RedirectToAction("Login");
+            //}
 
             // Verifica se a pessoa é CuidadorDeIdoso ou Fisioterapeuta
-            if (pessoa is CuidadorDeIdoso || pessoa is Fisioterapeuta)
-            {
-                var idosos = _context.Idosos.ToList();
-                var familiares = _context.Familiares.ToList();
-                ViewBag.UsuariosParaExibir = idosos.Concat<Pessoa>(familiares);
-            }
+            //if (pessoa is CuidadorDeIdoso || pessoa is Fisioterapeuta)
+            //{
+            //    var idosos = _context.Idosos.ToList();
+            //    var familiares = _context.Familiares.ToList();
+            //    ViewBag.UsuariosParaExibir = idosos.Concat<Usuario>(familiares);
+            //}
             // Verifica se a pessoa é Idoso ou Familiar
-            else if (pessoa is Idoso || pessoa is Familiar)
-            {
-                var cuidadores = _context.Cuidadores.ToList();
-                var fisioterapeutas = _context.Fisioterapeutas.ToList();
-                ViewBag.UsuariosParaExibir = cuidadores.Concat<Pessoa>(fisioterapeutas);
-            }
+            //else if (pessoa is Idoso || pessoa is Familiar)
+            //{
+            //    var cuidadores = _context.Cuidadores.ToList();
+            //    var fisioterapeutas = _context.Fisioterapeutas.ToList();
+            //    ViewBag.UsuariosParaExibir = cuidadores.Concat<Usuario>(fisioterapeutas);
+            //}
+
+            //var pessoas = _context.Usuarios.ToList();
+            //ViewBag.UsuariosParaExibir = pessoas;
 
             return View();
         }
-
 
         // Exibe o perfil do usuário com base no ID
         public ActionResult Perfil(int id)
         {
-            var usuario = _context.Pessoas.SingleOrDefault(p => p.Id == id);
-            if (usuario == null)
-            {
-                return HttpNotFound();
-            }
+            //var usuario = _context.Pessoas.SingleOrDefault(p => p.Id == id);
+            //if (usuario == null)
+            //{
+            //    return HttpNotFound();
+            //}
 
-            return View(usuario);
+            return View();
+            //return View(usuario);
         }
 
         // Método para realizar login e autenticação
         [HttpPost]
-        public ActionResult Login(string email, string senha)
+        public ActionResult Login(string email, string senha, string returnUrl)
         {
-            var usuario = _context.Pessoas.SingleOrDefault(p => p.Email == email && p.Senha == senha);
-            if (usuario != null)
-            {
-                var claims = new[] { new Claim(ClaimTypes.Name, email) };
-                var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
+            //var usuario = _context.Pessoas.SingleOrDefault(p => p.Email == email && p.Senha == senha);
+            //if (usuario != null)
+            //{
+            //    var claims = new[] { new Claim(ClaimTypes.Name, email) };
+            //    var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
 
-                var authManager = HttpContext.GetOwinContext().Authentication;
-                authManager.SignIn(identity);
+            //    var authManager = HttpContext.GetOwinContext().Authentication;
+            //    authManager.SignIn(identity);
 
-                return RedirectToAction("Dashboard");
-            }
+            //    return RedirectToLocal(returnUrl);
+            //}
 
-            ViewBag.ErrorMessage = "Usuário ou senha inválidos.";
+            //ViewBag.ErrorMessage = "Usuário ou senha inválidos.";
             return View();
+        }
+
+        // Método para redirecionar após o login
+        private ActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            return RedirectToAction("Dashboard");
         }
 
         // Método para realizar cadastro
         [HttpPost]
-        public ActionResult Cadastro(Pessoa pessoa)
+        public ActionResult Cadastro(Usuario pessoa)
         {
             if (ModelState.IsValid)
             {
-                _context.Pessoas.Add(pessoa);
+                //_context.Pessoas.Add(pessoa);
                 _context.SaveChanges();
                 return RedirectToAction("Login");
             }
 
             return View();
+        }
+
+        // Métodos para login com Google
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult ExternalLogin(string provider, string returnUrl)
+        {
+            // Solicitar redirecionamento para o provedor de autenticação externa
+            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", new { ReturnUrl = returnUrl }));
+        }
+
+        // Método de callback após autenticação externa
+        [HttpGet]
+        [AllowAnonymous]
+        public async System.Threading.Tasks.Task<ActionResult> ExternalLoginCallback(string returnUrl)
+        {
+            var loginInfo = await HttpContext.GetOwinContext().Authentication.GetExternalLoginInfoAsync();
+            if (loginInfo == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            //var usuario = _context.Pessoas.SingleOrDefault(p => p.Email == loginInfo.Email);
+            //if (usuario == null)
+            //{
+            //    // Se não existir, você pode criar um novo usuário aqui
+            //    usuario = new Usuario
+            //    {
+            //        Email = loginInfo.Email,
+            //        // Preencha outros campos necessários
+            //    };
+            //    _context.Pessoas.Add(usuario);
+            //    _context.SaveChanges();
+            //}
+
+            // Realizar login
+            //var claims = new[] { new Claim(ClaimTypes.Name, usuario.Email) };
+            //var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
+            //var authManager = HttpContext.GetOwinContext().Authentication;
+            //authManager.SignIn(identity);
+
+            //return RedirectToLocal(returnUrl);
+            return RedirectToAction("Login");
         }
     }
 }

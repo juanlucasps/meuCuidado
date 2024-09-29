@@ -1,5 +1,4 @@
-﻿@model meuCuidado.Models.Pessoa
-
+﻿@model meuCuidado.Models.Usuario
 @{
     ViewBag.Title = "Cadastro";
 }
@@ -10,38 +9,73 @@
 {
     @*@Html.AntiForgeryToken()*@
 
-    <div class="form-group">
-        @Html.Label("Nome")
-        @Html.TextBoxFor(m => m.Nome, new { @class = "form-control" })
-    </div>
-    <div class="form-group">
-        @Html.Label("CPF")
-        @Html.TextBoxFor(m => m.CPF, new { @class = "form-control" })
-    </div>
-    <div class="form-group">
-        @Html.Label("Endereco")
-        @Html.TextBoxFor(m => m.Endereco, new { @class = "form-control" })
-    </div>
-    <div class="form-group">
-        @Html.Label("Telefone")
-        @Html.TextBoxFor(m => m.Telefone, new { @class = "form-control" })
-    </div>
-    <div class="form-group">
-        @Html.Label("Email")
-        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-    </div>
-    <div class="form-group">
-        @Html.Label("Senha")
-        @Html.PasswordFor(m => m.Senha, new { @class = "form-control" })
-    </div>
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.Label("Nome", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Nome, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
-    <div class="form-group">
-        <label for="TipoUsuario">Tipo de Usuário</label>
-        @Html.DropDownList("TipoUsuario", new SelectList(new[] { "Idoso", "Cuidador", "Fisioterapeuta", "Familiar" }), new { @class = "form-control" })
-    </div>
+        <div class="form-group">
+            @Html.Label("Endereço", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Endereco, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Cadastrar</button>
+        <div class="form-group">
+            @Html.Label("Telefone", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Telefone, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Email", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Senha", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.PasswordFor(m => m.Senha, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Tipo de Usuário", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("TipoUsuario", new SelectList(new[] { "Idoso", "Cuidador", "Fisioterapeuta", "Tutor" }), new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <hr style="color: white" />
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Cadastrar" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
 }
+
+<hr />
+
+<div>
+    <a href="@Url.Action("ExternalLogin", "Conta", new { provider = "Google" })" class="btn btn-danger">Google</a>
+    <a href="@Url.Action("ExternalLogin", "Conta", new { provider = "Facebook" })" class="btn btn-primary">Facebook</a>
+</div>
+
 
 <p>
     Já tem uma conta? <a href="@Url.Action("Login", "Conta")">Faça login aqui</a>

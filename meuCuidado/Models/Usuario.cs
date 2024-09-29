@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace meuCuidado.Models
 {
-    public class Pessoa
+    public class Usuario
     {
         public int Id { get; set; }
+
+        public Guid IdentificadorUnico { get; set; }
 
         [Required]
         public string Nome { get; set; }
 
-        [Required]
         public string CPF { get; set; }
 
         [Required]
@@ -26,7 +24,12 @@ namespace meuCuidado.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
         public string Senha { get; set; }
+
+        public DateTime DataCadasto { get; set; }
+
+        public DateTime? DataAtualizacao { get; set; }
+
+        public DateTime? UltimoLogin { get; set; }
     }
 }

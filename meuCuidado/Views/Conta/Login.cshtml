@@ -1,7 +1,6 @@
 ﻿@{
     ViewBag.Title = "Login";
 }
-
 <h2>Login</h2>
 
 @using (Html.BeginForm())
@@ -14,8 +13,18 @@
         @Html.Label("Senha")
         @Html.Password("senha", null, new { @class = "form-control" })
     </div>
+
+    <hr style="color: white" />
+
     <button type="submit" class="btn btn-primary">Entrar</button>
 }
+
+<hr />
+
+<div>
+    <a href="~/signin-google" class="btn btn-danger">Entrar com Google</a>
+    <a href="~/signin-facebook" class="btn btn-primary">Entrar com Facebook</a>
+</div>
 
 @if (ViewBag.ErrorMessage != null)
 {
@@ -25,4 +34,3 @@
 <p>
     Não tem uma conta? <a href="@Url.Action("Cadastro", "Conta")">Cadastre-se aqui</a>
 </p>
-
