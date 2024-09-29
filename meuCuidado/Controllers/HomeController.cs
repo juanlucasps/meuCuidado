@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using meuCuidado.Models;
 using System.Web.Mvc;
 
 namespace meuCuidado.Controllers
@@ -25,6 +22,26 @@ namespace meuCuidado.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        } 
+        
+        public ActionResult Ajuda()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Ajuda(Ajuda ajuda)
+        {
+            if (ModelState.IsValid)
+            {
+                var emailController = new EmailController();
+                emailController.EnviarEmail(ajuda);
+
+                ViewBag.Message = "Sua solicitação foi enviada com sucesso!";
+                return View();
+            }
+
+            return View(ajuda);
         }
     }
 }

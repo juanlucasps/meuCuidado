@@ -1,82 +1,81 @@
 ﻿@model meuCuidado.Models.Usuario
 @{
     ViewBag.Title = "Cadastro";
+    //Layout = "~/Views/Shared/_Layout.cshtml"; // Define o layout a ser usado
 }
 
-<h2>Cadastro</h2>
+<div class="container">
+    <h2>Cadastro</h2>
 
-@using (Html.BeginForm())
-{
-    @*@Html.AntiForgeryToken()*@
+    @using (Html.BeginForm())
+    {
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.Label("Nome", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Nome, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
+                </div>
+            </div>
 
-    <div class="form-horizontal">
-        <div class="form-group">
-            @Html.Label("Nome", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Nome, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.Label("Endereço", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Endereco, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Endereco, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Telefone", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Telefone, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Telefone, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Email", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Senha", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.Senha, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Senha, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Tipo de Usuário", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("TipoUsuario", new SelectList(new[] { "Idoso", "Cuidador", "Fisioterapeuta", "Tutor" }), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Cadastrar" class="btn btn-primary" />
+                </div>
             </div>
         </div>
+    }
 
-        <div class="form-group">
-            @Html.Label("Endereço", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Endereco, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    <hr />
 
-        <div class="form-group">
-            @Html.Label("Telefone", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Telefone, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Email", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Senha", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.PasswordFor(m => m.Senha, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Tipo de Usuário", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TipoUsuario", new SelectList(new[] { "Idoso", "Cuidador", "Fisioterapeuta", "Tutor" }), new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
-        <hr style="color: white" />
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Cadastrar" class="btn btn-primary" />
-            </div>
-        </div>
+    <div>
+        <a href="@Url.Action("ExternalLogin", "Conta", new { provider = "Google" })" class="btn btn-danger">Google</a>
+        <a href="@Url.Action("ExternalLogin", "Conta", new { provider = "Facebook" })" class="btn btn-primary">Facebook</a>
     </div>
-}
 
-<hr />
-
-<div>
-    <a href="@Url.Action("ExternalLogin", "Conta", new { provider = "Google" })" class="btn btn-danger">Google</a>
-    <a href="@Url.Action("ExternalLogin", "Conta", new { provider = "Facebook" })" class="btn btn-primary">Facebook</a>
+    <p>
+        Já tem uma conta? <a href="@Url.Action("Login", "Conta")">Faça login aqui</a>
+    </p>
 </div>
-
-
-<p>
-    Já tem uma conta? <a href="@Url.Action("Login", "Conta")">Faça login aqui</a>
-</p>

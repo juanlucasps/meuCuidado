@@ -1,40 +1,58 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Meu Aplicativo ASP.NET</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/estilo.css" rel="stylesheet" />
+    <style>
+        /* Estilo para o footer fixo */
+        footer {
+            position: relative; /* Mudar de fixed para relative */
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 0;
+            background-color: #f8f9fa; /* Cor do fundo do footer */
+            border-top: 1px solid black; /* Linha superior */
+        }
+
+        /* Para garantir que o conteúdo não fique atrás do footer */
+        .body-content {
+            padding-bottom: 60px; /* Ajuste para o tamanho do footer */
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-sm navbar-light bg-light" style="border-bottom: 1px solid black;">
         <div class="container">
             @Html.ActionLink("meuCuidado", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Alternar a navegação" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav flex-grow-1">
-                    @*<li>@Html.ActionLink("Página Inicial", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>*@
-                    <li>@Html.ActionLink("Sobre", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Contato", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Sobre", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Ajuda", "Ajuda", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container body-content">
+
+    <div class="container body-content" style="padding: 20px;">
         @RenderBody()
         <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - meuCuidado</p>
-        </footer>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    <!-- Footer fixo -->
+    <footer>
+        <p class="text-center">&copy; @DateTime.Now.Year - meuCuidado</p>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>
