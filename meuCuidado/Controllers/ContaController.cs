@@ -76,19 +76,25 @@ namespace meuCuidado.Controllers
         [HttpPost]
         public ActionResult Login(string email, string senha, string returnUrl)
         {
-            //var usuario = _context.Pessoas.SingleOrDefault(p => p.Email == email && p.Senha == senha);
-            //if (usuario != null)
-            //{
-            //    var claims = new[] { new Claim(ClaimTypes.Name, email) };
-            //    var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
+            // verificar uma forma de melhorar isso
 
-            //    var authManager = HttpContext.GetOwinContext().Authentication;
-            //    authManager.SignIn(identity);
+            var cuidadorDeIdoso = _context.CuidadoresDeIdoso.SingleOrDefault(p => p.Email == email && p.Senha == senha);
+            var fisioterapeuta = _context.Fisioterapeutas.SingleOrDefault(p => p.Email == email && p.Senha == senha);
+            var idoso = _context.Idosos.SingleOrDefault(p => p.Email == email && p.Senha == senha);
+            var tutor = _context.Tutores.SingleOrDefault(p => p.Email == email && p.Senha == senha);
 
-            //    return RedirectToLocal(returnUrl);
-            //}
+            if (cuidadorDeIdoso != null || fisioterapeuta != null || idoso != null || tutor != null)
+            {
+                var claims = new[] { new Claim(ClaimTypes.Name, email) };
+                var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
 
-            //ViewBag.ErrorMessage = "Usuário ou senha inválidos.";
+                var authManager = HttpContext.GetOwinContext().Authentication;
+                authManager.SignIn(identity);
+
+                return RedirectToLocal(returnUrl);
+            }
+
+            ViewBag.ErrorMessage = "Usuário ou senha inválidos.";
             return View();
         }
 

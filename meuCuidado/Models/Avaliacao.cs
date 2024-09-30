@@ -7,6 +7,7 @@ namespace meuCuidado.Models
     [Table("meuCuidado_Avaliacao")]
     public class Avaliacao
     {
+        [Key]
         public int Id { get; set; }
 
         public Guid IdentificadorUnico { get; set; }

@@ -169,9 +169,9 @@
     <Compile Include="Migrations\202409070055456_InitialCreate.designer.cs">
       <DependentUpon>202409070055456_InitialCreate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202409282221045_NomeDaNovaMigracao.cs" />
-    <Compile Include="Migrations\202409282221045_NomeDaNovaMigracao.designer.cs">
-      <DependentUpon>202409282221045_NomeDaNovaMigracao.cs</DependentUpon>
+    <Compile Include="Migrations\202409302155574_CriacaoDeDatabase.cs" />
+    <Compile Include="Migrations\202409302155574_CriacaoDeDatabase.designer.cs">
+      <DependentUpon>202409302155574_CriacaoDeDatabase.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Ajuda.cs" />
@@ -286,8 +286,8 @@
     <EmbeddedResource Include="Migrations\202409070055456_InitialCreate.resx">
       <DependentUpon>202409070055456_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202409282221045_NomeDaNovaMigracao.resx">
-      <DependentUpon>202409282221045_NomeDaNovaMigracao.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202409302155574_CriacaoDeDatabase.resx">
+      <DependentUpon>202409302155574_CriacaoDeDatabase.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

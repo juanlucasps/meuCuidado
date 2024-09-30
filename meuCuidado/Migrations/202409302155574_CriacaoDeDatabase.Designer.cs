@@ -7,13 +7,13 @@ namespace meuCuidado.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.5.1")]
-    public sealed partial class NomeDaNovaMigracao : IMigrationMetadata
+    public sealed partial class CriacaoDeDatabase : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(NomeDaNovaMigracao));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(CriacaoDeDatabase));
         
         string IMigrationMetadata.Id
         {
-            get { return "202409282221045_NomeDaNovaMigracao"; }
+            get { return "202409302155574_CriacaoDeDatabase"; }
         }
         
         string IMigrationMetadata.Source

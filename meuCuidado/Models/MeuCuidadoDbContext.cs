@@ -58,18 +58,13 @@ namespace meuCuidado.Models
                 .HasKey(l => l.Id); // Define a chave primária
 
             modelBuilder.Entity<Lembrete>()
-                .HasOptional(l => l.Medicamento)
-                .WithRequired(m => m.Lembrete)
-                .WillCascadeOnDelete(true); // A exclusão em cascata pode ser mantida aqui, já que Medicamento é obrigatório para Lembrete
+                .HasOptional(l => l.Medicamento)  // Lembrete pode ter 0 ou 1 Medicamento
+                .WithOptionalDependent(m => m.Lembrete)  // Medicamento pode ter ou não um Lembrete
+                .WillCascadeOnDelete(false);  // Sem exclusão em cascata
 
             // Configurações para Medicamento
             modelBuilder.Entity<Medicamento>()
                 .HasKey(m => m.Id); // Define a chave primária
-
-            modelBuilder.Entity<Medicamento>()
-                .HasRequired(m => m.Lembrete)
-                .WithOptional(l => l.Medicamento)
-                .WillCascadeOnDelete(true); // Removido a exclusão em cascata aqui, porque já está na configuração de Lembrete
 
             // Configurações para Avaliacao
             modelBuilder.Entity<Avaliacao>()

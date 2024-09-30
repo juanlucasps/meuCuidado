@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace meuCuidado.Models
@@ -7,6 +8,7 @@ namespace meuCuidado.Models
     [Table("meuCuidado_RelacionamentoIdosoProfissional")]
     public class RelacionamentoIdosoProfissional
     {
+        [Key]
         public int Id { get; set; }
 
         public Guid IdentificadorUnico { get; set; }

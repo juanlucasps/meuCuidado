@@ -5,6 +5,7 @@ namespace meuCuidado.Models
 {
     public class Usuario
     {
+        [Key]
         public int Id { get; set; }
 
         public Guid IdentificadorUnico { get; set; }
