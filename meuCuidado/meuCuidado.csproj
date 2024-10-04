@@ -162,6 +162,7 @@
     <Compile Include="Controllers\ContaController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -175,6 +176,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Ajuda.cs" />
+    <Compile Include="Models\CadastroViewModel.cs" />
     <Compile Include="Models\MeuCuidadoDbContext.cs" />
     <Compile Include="Models\Avaliacao.cs" />
     <Compile Include="Models\CuidadorDeIdoso.cs" />
@@ -211,6 +213,9 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Imagens\facebook-logo.png" />
+    <Content Include="Imagens\facebook-logo.svg" />
+    <Content Include="Imagens\gmail-logo.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -242,15 +247,12 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Login.cshtml" />
-    <Content Include="Views\Cadastro.cshtml" />
-    <Content Include="Views\Dashboard.cshtml" />
-    <Content Include="Views\Perfil.cshtml" />
     <Content Include="Views\Conta\Cadastro.cshtml" />
     <Content Include="Views\Conta\Dashboard.cshtml" />
     <Content Include="Views\Conta\Login.cshtml" />
     <Content Include="Views\Conta\Perfil.cshtml" />
     <Content Include="Views\Home\Ajuda.cshtml" />
+    <Content Include="Views\Conta\CadastroProfissional.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

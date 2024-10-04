@@ -1,0 +1,62 @@
+﻿@model meuCuidado.Models.CadastroViewModel
+@{
+    ViewBag.Title = "Cadastro de Profissional";
+}
+
+<div class="container">
+    <h2>Cadastro de Profissional</h2>
+
+    @using (Html.BeginForm("CadastroProfissional", "Conta", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form" }))
+    {
+        <div class="form-group">
+            @Html.LabelFor(m => m.Usuario.CPF, "CPF")
+            @Html.TextBoxFor(m => m.Usuario.CPF, new { @class = "form-control", placeholder = "Digite seu CPF" })
+            @Html.ValidationMessageFor(m => m.Usuario.CPF, "", new { @class = "text-danger" })
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(m => m.Sexo, "Sexo")
+                @Html.DropDownListFor(m => m.Sexo, new SelectList(new[] { "Masculino", "Feminino" }), new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Sexo, "", new { @class = "text-danger" })
+            </div>*@
+
+        <div class="form-group">
+            @Html.Label("Foto com Documento")
+            <input type="file" name="FotoDocumento" accept="image/*" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Foto do Documento")
+            <input type="file" name="Documento" accept="image/*" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Certificado de Bons Antecedentes")
+            <input type="file" name="CertificadoBonsAntecedentes" accept="application/pdf" class="form-control" />
+        </div>
+
+        <div id="dispensaExercito" class="form-group" style="display:none;">
+            @Html.Label("Certificado de Dispensa do Exército")
+            <input type="file" name="CertificadoDispensa" accept="application/pdf" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
+    }
+
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#Sexo').change(function () {
+                if ($(this).val() === 'Masculino') {
+                    $('#dispensaExercito').show();
+                } else {
+                    $('#dispensaExercito').hide();
+                }
+            });
+        });
+    </script>
+}

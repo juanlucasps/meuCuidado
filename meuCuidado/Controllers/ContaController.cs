@@ -7,6 +7,9 @@ using meuCuidado.Models;
 using System.Linq;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.AspNet.Identity;
+using static meuCuidado.Extensions.EnumExtension;
+using System.Collections.Generic;
+using System;
 
 namespace meuCuidado.Controllers
 {
@@ -23,6 +26,12 @@ namespace meuCuidado.Controllers
 
         // Tela de Cadastro
         public ActionResult Cadastro()
+        {
+            return View();
+        }
+
+        // Tela de Cadastro do Profissional
+        public ActionResult CadastroProfissional()
         {
             return View();
         }
@@ -110,12 +119,69 @@ namespace meuCuidado.Controllers
 
         // Método para realizar cadastro
         [HttpPost]
-        public ActionResult Cadastro(Usuario pessoa)
+        public ActionResult Cadastro(CadastroViewModel pessoa)
         {
             if (ModelState.IsValid)
             {
-                //_context.Pessoas.Add(pessoa);
-                _context.SaveChanges();
+                if (pessoa.TipoUsuario == TipoUsuario.Idoso)
+                {
+                    // MODEL PARA CADASTRO DE IDOSO
+                    Idoso idoso = new Idoso
+                    {
+                        IdentificadorUnico = Guid.NewGuid(),
+                        Nome = pessoa.Usuario.Nome,
+                        Email = pessoa.Usuario.Email,
+                        CPF = pessoa.Usuario.CPF,
+                        Endereco = pessoa.Usuario.Endereco,
+                        Telefone = pessoa.Usuario.Telefone,
+                        Senha = pessoa.Usuario.Senha, 
+                        DataCadasto = DateTime.Now, 
+                        DataNascimento = DateTime.Now, 
+                        NecessidadesEspeciais = false,
+                        Tutor = new Tutor {
+                            IdentificadorUnico = Guid.NewGuid(),
+                            Nome = pessoa.Usuario.Nome,
+                            Email = pessoa.Usuario.Email,
+                            CPF = pessoa.Usuario.CPF,
+                            Endereco = pessoa.Usuario.Endereco,
+                            Telefone = pessoa.Usuario.Telefone,
+                            Senha = pessoa.Usuario.Senha,
+                            DataCadasto = DateTime.Now,
+                            RelacaoComIdoso = TipoUsuario.Tutor.ToString(),
+                            IdadeDoIdoso = DateTime.Now,
+                            NecessidadesEspeciais = false,
+                        }
+                    };
+
+                    _context.Idosos.Add(idoso);
+                    _context.SaveChanges();
+                }
+                else if (pessoa.TipoUsuario == TipoUsuario.Tutor)
+                {
+                    // MODEL PARA CADASTRO DE TUTOR
+                    Tutor tutor = new Tutor
+                    {
+                        IdentificadorUnico = new Guid(),
+                        Nome = pessoa.Usuario.Nome,
+                        Email = pessoa.Usuario.Email,
+                        CPF = pessoa.Usuario.CPF,
+                        Endereco = pessoa.Usuario.Endereco,
+                        Telefone = pessoa.Usuario.Telefone,
+                        Senha = pessoa.Usuario.Senha,
+                        DataCadasto = DateTime.Now,
+                        RelacaoComIdoso = "Tutor",
+                        IdadeDoIdoso = DateTime.Now,
+                        NecessidadesEspeciais = false
+                    };
+
+                    _context.Tutores.Add(tutor);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    return RedirectToAction("CadastroProfissional");
+                }
+
                 return RedirectToAction("Login");
             }
 

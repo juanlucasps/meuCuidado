@@ -4,7 +4,7 @@
 
 @using (Html.BeginForm("Ajuda", "Home", FormMethod.Post))
 {
-    @Html.AntiForgeryToken()
+    @*@Html.AntiForgeryToken()*@
 
     <div class="form-group">
         @Html.LabelFor(m => m.Titulo)

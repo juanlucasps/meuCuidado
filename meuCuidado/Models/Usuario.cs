@@ -18,11 +18,12 @@ namespace meuCuidado.Models
         [Required]
         public string Endereco { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O telefone é obrigatório.")]
+        [RegularExpression(@"^\+55\s\(\d{2}\)\s9\s\d{4}-\d{4}$", ErrorMessage = "O número de telefone deve estar no formato +55 (XX) 9 XXXX-XXXX.")] 
         public string Telefone { get; set; }
 
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "O e-mail é obrigatório.")]
+        [EmailAddress(ErrorMessage = "O e-mail fornecido não é válido.")]
         public string Email { get; set; }
 
         public string Senha { get; set; }
