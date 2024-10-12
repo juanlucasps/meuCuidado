@@ -15,6 +15,8 @@ namespace meuCuidado.Models
 
         public string CPF { get; set; }
 
+        public string Genero { get; set; }
+
         [Required]
         public string Endereco { get; set; }
 

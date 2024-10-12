@@ -16,6 +16,7 @@ namespace meuCuidado.Controllers
     public class ContaController : Controller
     {
         private readonly MeuCuidadoDbContext _context = new MeuCuidadoDbContext();
+        private readonly EmailController _emailController = new EmailController();
 
         // Tela de Login
         public ActionResult Login(string returnUrl)
@@ -34,6 +35,68 @@ namespace meuCuidado.Controllers
         public ActionResult CadastroProfissional()
         {
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult CadastroProfissional(Usuario model, HttpPostedFileBase FotoDocumento, HttpPostedFileBase Documento, HttpPostedFileBase CertificadoBonsAntecedentes, HttpPostedFileBase CertificadoDispensa)
+        {
+            if (ModelState.IsValid)
+            {
+                // Aqui você pode salvar as informações do profissional
+                // Verifique se cada arquivo foi enviado e faça o upload
+                if (FotoDocumento != null && FotoDocumento.ContentLength > 0)
+                {
+                    var caminhoFotoDocumento = Server.MapPath("~/Uploads/FotosDocumento/");
+                    var nomeArquivoFoto = Guid.NewGuid() + System.IO.Path.GetExtension(FotoDocumento.FileName);
+                    FotoDocumento.SaveAs(caminhoFotoDocumento + nomeArquivoFoto);
+                }
+
+                if (Documento != null && Documento.ContentLength > 0)
+                {
+                    var caminhoDocumento = Server.MapPath("~/Uploads/Documentos/");
+                    var nomeArquivoDocumento = Guid.NewGuid() + System.IO.Path.GetExtension(Documento.FileName);
+                    Documento.SaveAs(caminhoDocumento + nomeArquivoDocumento);
+                }
+
+                if (CertificadoBonsAntecedentes != null && CertificadoBonsAntecedentes.ContentLength > 0)
+                {
+                    var caminhoCertificadoBonsAntecedentes = Server.MapPath("~/Uploads/CertificadosBonsAntecedentes/");
+                    var nomeArquivoCertificado = Guid.NewGuid() + System.IO.Path.GetExtension(CertificadoBonsAntecedentes.FileName);
+                    CertificadoBonsAntecedentes.SaveAs(caminhoCertificadoBonsAntecedentes + nomeArquivoCertificado);
+                }
+
+                if (CertificadoDispensa != null && CertificadoDispensa.ContentLength > 0)
+                {
+                    var caminhoCertificadoDispensa = Server.MapPath("~/Uploads/CertificadosDispensa/");
+                    var nomeArquivoDispensa = Guid.NewGuid() + System.IO.Path.GetExtension(CertificadoDispensa.FileName);
+                    CertificadoDispensa.SaveAs(caminhoCertificadoDispensa + nomeArquivoDispensa);
+                }
+
+                return RedirectToAction("Dashboard");
+            }
+
+            // Pega os erros da model
+            var errors = GetModelErrors();
+
+            // Aqui você pode fazer algo com os erros, como logar ou enviar para a view
+            ViewBag.Errors = errors;
+
+            return View(model);
+        }
+
+        private List<string> GetModelErrors()
+        {
+            var errors = new List<string>();
+
+            foreach (var modelState in ModelState)
+            {
+                foreach (var error in modelState.Value.Errors)
+                {
+                    errors.Add($"{modelState.Key}: {error.ErrorMessage}");
+                }
+            }
+
+            return errors;
         }
 
         // Dashboard
@@ -87,10 +150,10 @@ namespace meuCuidado.Controllers
         {
             // verificar uma forma de melhorar isso
 
-            var cuidadorDeIdoso = _context.CuidadoresDeIdoso.SingleOrDefault(p => p.Email == email && p.Senha == senha);
-            var fisioterapeuta = _context.Fisioterapeutas.SingleOrDefault(p => p.Email == email && p.Senha == senha);
-            var idoso = _context.Idosos.SingleOrDefault(p => p.Email == email && p.Senha == senha);
-            var tutor = _context.Tutores.SingleOrDefault(p => p.Email == email && p.Senha == senha);
+            var cuidadorDeIdoso = _context.CuidadoresDeIdoso.FirstOrDefault(p => p.Email == email && p.Senha == senha);
+            var fisioterapeuta = _context.Fisioterapeutas.FirstOrDefault(p => p.Email == email && p.Senha == senha);
+            var idoso = _context.Idosos.FirstOrDefault(p => p.Email == email && p.Senha == senha);
+            var tutor = _context.Tutores.FirstOrDefault(p => p.Email == email && p.Senha == senha);
 
             if (cuidadorDeIdoso != null || fisioterapeuta != null || idoso != null || tutor != null)
             {
@@ -100,12 +163,45 @@ namespace meuCuidado.Controllers
                 var authManager = HttpContext.GetOwinContext().Authentication;
                 authManager.SignIn(identity);
 
-                return RedirectToLocal(returnUrl);
+                var codigoAutenticacao = _emailController.EnviarEmailAutenticacao(email);
+                Session["CodigoAutenticacao"] = codigoAutenticacao;
+
+                // Exibir popup com a mensagem de envio do código
+                ViewBag.ShowPopup = true;
+                ViewBag.PopupMessage = "Código de autenticação enviado para seu e-mail.";
+
+                var autenticacaoViewModel = new AutenticacaoViewModel
+                {
+                    Codigo1 = string.Empty,
+                    Codigo2 = string.Empty,
+                    Codigo3 = string.Empty,
+                    Codigo4 = string.Empty,
+                    Codigo5 = string.Empty,
+                    Email = email
+                };
+
+                return View(autenticacaoViewModel);
             }
 
             ViewBag.ErrorMessage = "Usuário ou senha inválidos.";
             return View();
         }
+
+        [HttpPost]
+        public ActionResult ValidarCodigoAutenticacao(AutenticacaoViewModel model)
+        {
+            // Concatenar os códigos em um só
+            var codigoInserido = $"{model.Codigo1}{model.Codigo2}{model.Codigo3}{model.Codigo4}{model.Codigo5}";
+            // Pega o código da sessão
+            var codigoCorreto = Session["CodigoAutenticacao"].ToString();
+
+            if (codigoInserido == codigoCorreto)
+                return Json(new { success = true, redirectUrl = Url.Action("Dashboard", "Conta") });
+
+            // Se o código estiver incorreto, retorna ao login com mensagem de erro
+            return Json(new { success = false, message = "Código de autenticação inválido." });
+        }
+
 
         // Método para redirecionar após o login
         private ActionResult RedirectToLocal(string returnUrl)
@@ -134,11 +230,12 @@ namespace meuCuidado.Controllers
                         CPF = pessoa.Usuario.CPF,
                         Endereco = pessoa.Usuario.Endereco,
                         Telefone = pessoa.Usuario.Telefone,
-                        Senha = pessoa.Usuario.Senha, 
-                        DataCadasto = DateTime.Now, 
-                        DataNascimento = DateTime.Now, 
+                        Senha = pessoa.Usuario.Senha,
+                        DataCadasto = DateTime.Now,
+                        DataNascimento = DateTime.Now,
                         NecessidadesEspeciais = false,
-                        Tutor = new Tutor {
+                        Tutor = new Tutor
+                        {
                             IdentificadorUnico = Guid.NewGuid(),
                             Nome = pessoa.Usuario.Nome,
                             Email = pessoa.Usuario.Email,

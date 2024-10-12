@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Meu Aplicativo ASP.NET</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/Content/estilo.css" rel="stylesheet" />
+    <link href="~/Content/estilos.css" rel="stylesheet" />
+    @RenderSection("styles", required: false)
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link rel="stylesheet" href="~/Content/site.css" />
     <style>
         /* Estilo para o footer fixo */
         footer {

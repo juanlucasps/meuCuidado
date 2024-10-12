@@ -176,6 +176,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Ajuda.cs" />
+    <Compile Include="Models\AutenticacaoViewModel.cs" />
     <Compile Include="Models\CadastroViewModel.cs" />
     <Compile Include="Models\MeuCuidadoDbContext.cs" />
     <Compile Include="Models\Avaliacao.cs" />

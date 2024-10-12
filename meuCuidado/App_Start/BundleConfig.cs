@@ -30,7 +30,7 @@ namespace meuCuidado
                       "~/Content/site.css"));
 
             bundles.Add(new StyleBundle("~/bundles/css").Include(
-                      "~/Content/estilo.css"));
+                      "~/Content/estilos.css"));
         }
     }
 }

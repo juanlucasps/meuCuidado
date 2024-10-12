@@ -2,10 +2,13 @@
 using System.Net;
 using meuCuidado.Models;
 using System.Web.Services.Description;
+using System.Web.Helpers;
+using System;
+using System.Web.Mvc;
 
 namespace meuCuidado.Controllers
 {
-    public class EmailController
+    public class EmailController : Controller
     {
         public void EnviarEmail(Ajuda model)
         {
@@ -27,6 +30,29 @@ namespace meuCuidado.Controllers
                 smtp.Credentials = new NetworkCredential("diovan.taylor@gmail.com", "jdit yrav nsjw qjwj");
                 smtp.Send(mensagem);
             }
+        }
+
+        public int EnviarEmailAutenticacao(string email)
+        {
+            var mensagem = new MailMessage();
+            var codigoAutenticacao = new Random().Next(10000, 99999);
+
+            mensagem.From = new MailAddress("72000953@aluno.faculdadecotemig.br");
+            mensagem.To.Add(email);
+            mensagem.Subject = "Código de Autenticação";
+            mensagem.Body = $"Seu código de autenticação é: {codigoAutenticacao}";
+            mensagem.IsBodyHtml = false;
+
+            using (var smtp = new SmtpClient())
+            {
+                smtp.Host = "smtp.gmail.com"; // mesmo host configurado no web.config
+                smtp.Port = 587; // mesmo port configurado no web.config
+                smtp.EnableSsl = true; // mesmo enableSsl configurado no web.config
+                smtp.Credentials = new NetworkCredential("diovan.taylor@gmail.com", "jdit yrav nsjw qjwj");
+                smtp.Send(mensagem);
+            }
+
+            return codigoAutenticacao;
         }
     }
 }
