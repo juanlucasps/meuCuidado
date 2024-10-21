@@ -1,8 +1,6 @@
 ﻿using System.Net.Mail;
 using System.Net;
-using meuCuidado.Models;
-using System.Web.Services.Description;
-using System.Web.Helpers;
+using meuCuidado.Dominio.Models;
 using System;
 using System.Web.Mvc;
 

@@ -3,13 +3,14 @@ using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Owin.Security;
-using meuCuidado.Models;
+using meuCuidado.Dominio.Models;
 using System.Linq;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.AspNet.Identity;
-using static meuCuidado.Extensions.EnumExtension;
+using static meuCuidado.Dominio.Extensions.EnumExtension;
 using System.Collections.Generic;
 using System;
+using System.IO;
 
 namespace meuCuidado.Controllers
 {
@@ -38,7 +39,8 @@ namespace meuCuidado.Controllers
         }
 
         [HttpPost]
-        public ActionResult CadastroProfissional(Usuario model, HttpPostedFileBase FotoDocumento, HttpPostedFileBase Documento, HttpPostedFileBase CertificadoBonsAntecedentes, HttpPostedFileBase CertificadoDispensa)
+        //public ActionResult CadastroProfissional(Usuario model, HttpPostedFileBase FotoDocumento, HttpPostedFileBase Documento, HttpPostedFileBase CertificadoBonsAntecedentes, HttpPostedFileBase CertificadoDispensa)
+        public ActionResult CadastroProfissional(CadastroProfissionalViewModel cadastroProfissionalViewModel, HttpPostedFileBase FotoDocumento, HttpPostedFileBase Documento, HttpPostedFileBase CertificadoBonsAntecedentes, HttpPostedFileBase CertificadoDispensa)
         {
             if (ModelState.IsValid)
             {
@@ -46,29 +48,41 @@ namespace meuCuidado.Controllers
                 // Verifique se cada arquivo foi enviado e faça o upload
                 if (FotoDocumento != null && FotoDocumento.ContentLength > 0)
                 {
-                    var caminhoFotoDocumento = Server.MapPath("~/Uploads/FotosDocumento/");
-                    var nomeArquivoFoto = Guid.NewGuid() + System.IO.Path.GetExtension(FotoDocumento.FileName);
+                    var caminhoFotoDocumento = Server.MapPath("~/DocumentosAnalise/FotosDocumento/");
+                    if (!Directory.Exists(caminhoFotoDocumento))
+                        Directory.CreateDirectory(caminhoFotoDocumento);
+
+                    var nomeArquivoFoto = Guid.NewGuid() + Path.GetExtension(FotoDocumento.FileName);
                     FotoDocumento.SaveAs(caminhoFotoDocumento + nomeArquivoFoto);
                 }
 
                 if (Documento != null && Documento.ContentLength > 0)
                 {
-                    var caminhoDocumento = Server.MapPath("~/Uploads/Documentos/");
-                    var nomeArquivoDocumento = Guid.NewGuid() + System.IO.Path.GetExtension(Documento.FileName);
+                    var caminhoDocumento = Server.MapPath("~/DocumentosAnalise/Documentos/");
+                    if (!Directory.Exists(caminhoDocumento))
+                        Directory.CreateDirectory(caminhoDocumento);
+
+                    var nomeArquivoDocumento = Guid.NewGuid() + Path.GetExtension(Documento.FileName);
                     Documento.SaveAs(caminhoDocumento + nomeArquivoDocumento);
                 }
 
                 if (CertificadoBonsAntecedentes != null && CertificadoBonsAntecedentes.ContentLength > 0)
                 {
-                    var caminhoCertificadoBonsAntecedentes = Server.MapPath("~/Uploads/CertificadosBonsAntecedentes/");
-                    var nomeArquivoCertificado = Guid.NewGuid() + System.IO.Path.GetExtension(CertificadoBonsAntecedentes.FileName);
+                    var caminhoCertificadoBonsAntecedentes = Server.MapPath("~/DocumentosAnalise/CertificadosBonsAntecedentes/");
+                    if (!Directory.Exists(caminhoCertificadoBonsAntecedentes))
+                        Directory.CreateDirectory(caminhoCertificadoBonsAntecedentes);
+
+                    var nomeArquivoCertificado = Guid.NewGuid() + Path.GetExtension(CertificadoBonsAntecedentes.FileName);
                     CertificadoBonsAntecedentes.SaveAs(caminhoCertificadoBonsAntecedentes + nomeArquivoCertificado);
                 }
 
                 if (CertificadoDispensa != null && CertificadoDispensa.ContentLength > 0)
                 {
-                    var caminhoCertificadoDispensa = Server.MapPath("~/Uploads/CertificadosDispensa/");
-                    var nomeArquivoDispensa = Guid.NewGuid() + System.IO.Path.GetExtension(CertificadoDispensa.FileName);
+                    var caminhoCertificadoDispensa = Server.MapPath("~/DocumentosAnalise/CertificadosDispensa/");
+                    if (!Directory.Exists(caminhoCertificadoDispensa))
+                        Directory.CreateDirectory(caminhoCertificadoDispensa);
+
+                    var nomeArquivoDispensa = Guid.NewGuid() + Path.GetExtension(CertificadoDispensa.FileName);
                     CertificadoDispensa.SaveAs(caminhoCertificadoDispensa + nomeArquivoDispensa);
                 }
 
@@ -81,7 +95,7 @@ namespace meuCuidado.Controllers
             // Aqui você pode fazer algo com os erros, como logar ou enviar para a view
             ViewBag.Errors = errors;
 
-            return View(model);
+            return View(cadastroProfissionalViewModel);
         }
 
         private List<string> GetModelErrors()

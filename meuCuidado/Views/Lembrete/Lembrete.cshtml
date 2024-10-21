@@ -1,0 +1,219 @@
+﻿@model IEnumerable<meuCuidado.Dominio.Models.Lembrete>
+@{
+    ViewBag.Title = "Lembrete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2>@ViewBag.Title</h2>
+    <div id="calendar">
+        <div class="calendar-header">
+            <button id="prevMonth" class="btn btn-light">&lt;</button>
+            <h3 id="monthYear"></h3>
+            <button id="nextMonth" class="btn btn-light">&gt;</button>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+
+    <div class="reminder-list">
+        <h4>Lembretes</h4>
+        <ul class="list-group" id="reminderList"></ul>
+    </div>
+
+    <form id="addReminderForm" style="display:none;">
+        <h2>Adicionar Lembrete</h2>
+        <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <input type="text" class="form-control" id="descricao" required />
+        </div>
+        <div class="form-group">
+            <label for="dataHora">Hora do Lembrete</label>
+            <input type="time" class="form-control" id="dataHora" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Adicionar Lembrete</button>
+    </form>
+</div>
+
+<style>
+    body {
+        background-color: #f9f9f9;
+    }
+
+    #calendar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        text-align: center;
+    }
+
+    .day {
+        padding: 10px;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .day.selected {
+            background-color: #a8dadc; /* Azul pastel */
+        }
+
+        .day:hover {
+            background-color: #e0e0e0;
+        }
+
+    .reminder-list {
+        margin-top: 20px;
+        max-width: 600px;
+    }
+
+        .reminder-list .list-group-item {
+            background-color: #fefefe;
+        }
+</style>
+<script>
+    let currentMonth = new Date();
+    const monthYear = document.getElementById('monthYear');
+    const calendarGrid = document.getElementById('calendarGrid');
+    const reminderList = document.getElementById('reminderList');
+    let selectedDate = '';
+
+    function renderCalendar() {
+        monthYear.textContent = currentMonth.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+        calendarGrid.innerHTML = '';
+
+        const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+        const lastDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+
+        // Adiciona espaços vazios para os dias antes do primeiro dia do mês
+        for (let i = 0; i < firstDay.getDay(); i++) {
+            const emptyDiv = document.createElement('div');
+            calendarGrid.appendChild(emptyDiv);
+        }
+
+        // Adiciona os dias do mês
+        for (let day = 1; day <= lastDay.getDate(); day++) {
+            const dayDiv = document.createElement('div');
+            dayDiv.textContent = day;
+            dayDiv.className = 'day';
+            dayDiv.dataset.date = `${currentMonth.getFullYear()}-${(currentMonth.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+            dayDiv.addEventListener('click', function () {
+                // Resetar seleção de dias
+                const allDays = document.querySelectorAll('.day');
+                allDays.forEach(d => d.classList.remove('selected')); // Remove a classe 'selected' de todos os dias
+                dayDiv.classList.add('selected'); // Adiciona a classe 'selected' ao dia clicado
+
+                selectedDate = dayDiv.dataset.date;
+
+                // Exibir lembretes para a data selecionada
+                showReminders(selectedDate);
+
+                // Exibir formulário para adicionar lembrete
+                document.getElementById('addReminderForm').style.display = 'block';
+            });
+
+            calendarGrid.appendChild(dayDiv);
+        }
+    }
+
+    document.getElementById('prevMonth').addEventListener('click', function () {
+        currentMonth.setMonth(currentMonth.getMonth() - 1);
+        renderCalendar();
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', function () {
+        currentMonth.setMonth(currentMonth.getMonth() + 1);
+        renderCalendar();
+    });
+
+    // Adicionar lembrete
+    document.getElementById('addReminderForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const descricao = document.getElementById('descricao').value.trim(); // Remove espaços em branco
+        const dataHora = new Date(selectedDate + 'T' + document.getElementById('dataHora').value);
+
+        // Validação simples
+        if (!descricao) {
+            alert('A descrição do lembrete é obrigatória.');
+            return;
+        }
+
+        fetch('/Lembrete/Create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ Descricao: descricao, DataHora: dataHora, Repete: false }) // Ajuste conforme necessário
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Lembrete adicionado com sucesso!');
+                    renderCalendar(); // Re-renderiza o calendário
+                    document.getElementById('addReminderForm').reset(); // Limpa o formulário
+                    document.getElementById('addReminderForm').style.display = 'none'; // Esconde o formulário
+                } else {
+                    // Exibe a mensagem na tela
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'alert alert-danger';
+                    messageDiv.textContent = 'Erro ao adicionar lembrete.';
+                    document.body.appendChild(messageDiv);
+                    setTimeout(() => messageDiv.remove(), 3000); // Remove a mensagem após 3 segundos
+                }
+            });
+    });
+
+    // Função para buscar e exibir lembretes
+    function showReminders(date) {
+        fetch(`/Lembrete/GetReminders?date=${date}`)
+            .then(response => response.json())
+            .then(data => {
+                reminderList.innerHTML = ""; // Limpa a lista de lembretes
+                if (data.success) {
+                    if (data.reminders.length > 0) {
+                        data.reminders.forEach(reminder => {
+                            const li = document.createElement('li');
+                            li.className = 'list-group-item';
+                            li.textContent = `${reminder.Descricao} - ${new Date(reminder.DataHora).toLocaleString('pt-BR')}`;
+                            reminderList.appendChild(li);
+                        });
+                    } else {
+                        reminderList.innerHTML = "<li class='list-group-item'>Nenhum lembrete para esta data.</li>";
+                    }
+                } else {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'alert alert-warning';
+                    messageDiv.textContent = 'Nenhum lembrete encontrado.';
+                    document.body.appendChild(messageDiv);
+                    setTimeout(() => messageDiv.remove(), 3000); // Remove a mensagem após 3 segundos
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao buscar lembretes:', error);
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'alert alert-danger';
+                messageDiv.textContent = 'Erro ao buscar lembretes.';
+                document.body.appendChild(messageDiv);
+                setTimeout(() => messageDiv.remove(), 3000); // Remove a mensagem após 3 segundos
+            });
+    }
+
+    // Renderiza o calendário na primeira carga
+    renderCalendar();
+</script>

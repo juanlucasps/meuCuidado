@@ -22,7 +22,7 @@ namespace meuCuidado
         {
             if (HttpContext.Current.Request.Url.AbsolutePath == "/")
             {
-                HttpContext.Current.Response.Redirect("/Conta/Login");
+                HttpContext.Current.Response.Redirect("/Login/Login");
             }
         }
     }

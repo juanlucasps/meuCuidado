@@ -9,6 +9,8 @@
     @RenderSection("styles", required: false)
     <link rel="stylesheet" href="~/Content/bootstrap.css" />
     <link rel="stylesheet" href="~/Content/site.css" />
+    @*<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>*@
     <style>
         /* Estilo para o footer fixo */
         footer {
@@ -25,19 +27,40 @@
         .body-content {
             padding-bottom: 60px; /* Ajuste para o tamanho do footer */
         }
+
+        .fc {
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        .reminder-container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .reminder {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-sm navbar-light bg-light" style="border-bottom: 1px solid black;">
         <div class="container">
-            @Html.ActionLink("meuCuidado", "Login", "Conta", new { area = "" }, new { @class = "navbar-brand" })
+            @Html.ActionLink("meuCuidado", "Login", "Login", new { area = "" }, new { @class = "navbar-brand" })
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">@Html.ActionLink("Sobre", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li class="nav-item">@Html.ActionLink("Ajuda", "Ajuda", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Ajuda", "Ajuda", "Ajuda", new { area = "" }, new { @class = "nav-link" })</li>
                 </ul>
             </div>
         </div>

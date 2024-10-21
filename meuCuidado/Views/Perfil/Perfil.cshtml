@@ -1,0 +1,33 @@
+﻿@using meuCuidado.Dominio.Models
+@model meuCuidado.Dominio.Models.Usuario
+
+@{
+    ViewBag.Title = "Perfil";
+}
+
+<h2>@Model.Nome</h2>
+
+<p><strong>CPF:</strong> @Model.CPF</p>
+<p><strong>Endereço:</strong> @Model.Endereco</p>
+<p><strong>Telefone:</strong> @Model.Telefone</p>
+<p><strong>Email:</strong> @Model.Email</p>
+
+@*@if (Model is Idoso idoso)
+{
+    <p><strong>Data de Nascimento:</strong> @idoso.DataNascimento.ToShortDateString()</p>
+}
+
+@if (Model is CuidadorDeIdoso cuidador)
+{
+    <p><strong>Registro Profissional:</strong> @cuidador.RegistroProfissional</p>
+}
+
+@if (Model is Fisioterapeuta fisioterapeuta)
+{
+    <p><strong>Registro Profissional:</strong> @fisioterapeuta.RegistroProfissional</p>
+}
+
+@if (Model is Familiar familiar)
+{
+    <p><strong>Relação com Idoso:</strong> @familiar.RelacaoComIdoso</p>*@
+}

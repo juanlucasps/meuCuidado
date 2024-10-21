@@ -21,7 +21,7 @@ namespace MeuCuidado
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-                LoginPath = new PathString("/Conta/Login") // URL para a página de login
+                LoginPath = new PathString("/Login/Login") // URL para a página de login
             });
 
             //// Configurar autenticação via Google

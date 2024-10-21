@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace meuCuidado
@@ -16,7 +12,15 @@ namespace meuCuidado
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Conta", action = "Login", id = UrlParameter.Optional }
+                defaults: new { controller = "Login", action = "Login", id = UrlParameter.Optional }
+            );
+
+            // configurar as demais rotas
+
+            routes.MapRoute(
+                name: "Lembrete",
+                url: "{controller}/{action}",
+                defaults: new { controller = "Lembrete", action = "Lembrete" }
             );
         }
     }
