@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using static meuCuidado.Dominio.Extensions.EnumExtension;
 
-namespace meuCuidado.Dominio.Models
+namespace meuCuidado.Dominio.ViewModels
 {
     public class CadastroProfissionalViewModel
     {

@@ -1,4 +1,5 @@
 ﻿using meuCuidado.Dominio.Models;
+using meuCuidado.Dominio.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -84,10 +85,10 @@ namespace meuCuidado.Controllers
                     return RedirectToAction("CadastroProfissional");
                 }
 
-                return RedirectToAction("Login");
+                return RedirectToAction("Login", "Login");
             }
 
-            return View();
+            return View(pessoa);
         }
 
         // Tela de Cadastro do Profissional

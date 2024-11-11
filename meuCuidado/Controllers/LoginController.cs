@@ -1,11 +1,12 @@
 ﻿using meuCuidado.Dominio.Models;
+using meuCuidado.Dominio.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 
 namespace meuCuidado.Controllers
@@ -22,13 +23,10 @@ namespace meuCuidado.Controllers
             return View();
         }
 
-
         // Método para realizar login e autenticação
         [HttpPost]
         public ActionResult Login(string email, string senha, string returnUrl)
         {
-            // verificar uma forma de melhorar isso
-
             var cuidadorDeIdoso = _context.CuidadoresDeIdoso.FirstOrDefault(p => p.Email == email && p.Senha == senha);
             var fisioterapeuta = _context.Fisioterapeutas.FirstOrDefault(p => p.Email == email && p.Senha == senha);
             var idoso = _context.Idosos.FirstOrDefault(p => p.Email == email && p.Senha == senha);
@@ -44,10 +42,7 @@ namespace meuCuidado.Controllers
 
                 var codigoAutenticacao = _emailController.EnviarEmailAutenticacao(email);
                 Session["CodigoAutenticacao"] = codigoAutenticacao;
-
-                // Exibir popup com a mensagem de envio do código
-                ViewBag.ShowPopup = true;
-                ViewBag.PopupMessage = "Código de autenticação enviado para seu e-mail.";
+                Session["SenhaCodificada"] = senha;
 
                 var autenticacaoViewModel = new AutenticacaoViewModel
                 {
@@ -59,13 +54,24 @@ namespace meuCuidado.Controllers
                     Email = email
                 };
 
-                return View(autenticacaoViewModel);
+                return View("Autenticacao", autenticacaoViewModel);
             }
 
             ViewBag.ErrorMessage = "Usuário ou senha inválidos.";
             return View();
         }
 
+        public ActionResult Autenticacao(AutenticacaoViewModel autenticacaoViewModel)
+        {
+            return View(autenticacaoViewModel);
+        }
+
+        [HttpPost]
+        public ActionResult ReenviarCodigoAutenticacao(string email, string senha, string returnUrl)
+        {
+            senha = Session["SenhaCodificada"].ToString();
+            return Login(email, senha, returnUrl);
+        }
 
         // Métodos para login com Google
         [HttpGet]
@@ -83,9 +89,10 @@ namespace meuCuidado.Controllers
         {
             var loginInfo = await HttpContext.GetOwinContext().Authentication.GetExternalLoginInfoAsync();
             if (loginInfo == null)
-            {
                 return RedirectToAction("Login");
-            }
+
+            var email = string.Empty;
+            var senha = string.Empty;
 
             //var usuario = _context.Pessoas.SingleOrDefault(p => p.Email == loginInfo.Email);
             //if (usuario == null)
@@ -100,14 +107,16 @@ namespace meuCuidado.Controllers
             //    _context.SaveChanges();
             //}
 
-            // Realizar login
-            //var claims = new[] { new Claim(ClaimTypes.Name, usuario.Email) };
-            //var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
-            //var authManager = HttpContext.GetOwinContext().Authentication;
-            //authManager.SignIn(identity);
+            var claims = new[] { new Claim(ClaimTypes.Name, email) };
+            var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
 
-            //return RedirectToLocal(returnUrl);
-            return RedirectToAction("Login");
+            var authManager = HttpContext.GetOwinContext().Authentication;
+            authManager.SignIn(identity);
+
+            //Realizar login
+            authManager.SignIn(identity);
+
+            return RedirectToLocal(returnUrl);
         }
 
         [HttpPost]
@@ -119,12 +128,21 @@ namespace meuCuidado.Controllers
             var codigoCorreto = Session["CodigoAutenticacao"].ToString();
 
             if (codigoInserido == codigoCorreto)
-                return Json(new { success = true, redirectUrl = Url.Action("Dashboard", "Dashboard") });
-
-            // Se o código estiver incorreto, retorna ao login com mensagem de erro
-            return Json(new { success = false, message = "Código de autenticação inválido." });
+            {
+                return Json(new { redirectUrl = Url.Action("Dashboard", "Dashboard") });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Código de autenticação inválido." });
+            }
         }
 
+        [HttpPost]
+        public ActionResult FecharPopup()
+        {
+            ViewBag.ShowPopup = false;
+            return View("Login");
+        }
 
         // Método para redirecionar após o login
         private ActionResult RedirectToLocal(string returnUrl)

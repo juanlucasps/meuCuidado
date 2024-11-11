@@ -1,0 +1,236 @@
+﻿@model meuCuidado.Dominio.ViewModels.AutenticacaoViewModel
+@{
+    ViewBag.Title = "Autenticação";
+}
+
+<div class="auth-container">
+    <h2>Autenticação de Dois Fatores</h2>
+
+    <div class="auth-content">
+        <p>@ViewBag.PopupMessage</p>
+        <div class="code-inputs">
+            <!-- 5 campos para o código -->
+            @Html.TextBoxFor(m => m.Codigo1, new { @maxlength = "1", @class = "code-box", id = "Codigo1" })
+            @Html.TextBoxFor(m => m.Codigo2, new { @maxlength = "1", @class = "code-box", id = "Codigo2" })
+            @Html.TextBoxFor(m => m.Codigo3, new { @maxlength = "1", @class = "code-box", id = "Codigo3" })
+            @Html.TextBoxFor(m => m.Codigo4, new { @maxlength = "1", @class = "code-box", id = "Codigo4" })
+            @Html.TextBoxFor(m => m.Codigo5, new { @maxlength = "1", @class = "code-box", id = "Codigo5" })
+        </div>
+        <input type="hidden" id="email" value="@Model.Email" />
+    </div>
+
+    <div class="auth-footer">
+        <button type="button" id="confirmButton" class="confirm-btn">Confirmar</button>
+        <button type="button" id="resendButton" class="resend-btn" disabled>
+            <span id="spinner" class="spinner"></span> Reenviar Código
+        </button>
+    </div>
+</div>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .auth-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #007BFF;
+    }
+
+    .auth-content {
+        margin-bottom: 20px;
+    }
+
+    .code-inputs {
+        display: flex;
+        justify-content: center;
+    }
+
+    .code-box {
+        width: 50px;
+        height: 50px;
+        margin: 0 5px;
+        font-size: 24px;
+        text-align: center;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: border-color 0.3s;
+    }
+
+        .code-box:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+    .auth-footer {
+        margin-top: 20px;
+    }
+
+    .confirm-btn {
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .confirm-btn:hover {
+            background-color: #0056b3;
+        }
+
+    /* Responsividade */
+    .auth-container {
+        width: 100%;
+        max-width: 400px;
+        padding: 10px;
+    }
+
+    .code-box {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+     /* Estilo adicional para o botão de Reenviar Código */
+    .resend-btn {
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: not-allowed;
+        margin-top: 10px;
+        transition: background-color 0.3s;
+        position: relative;
+    }
+
+    .resend-btn.enabled {
+        cursor: pointer;
+        background-color: #0056b3;
+    }
+
+    .spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #fff;
+        border-top: 2px solid #007BFF;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-right: 8px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    @*@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }*@
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    jQuery(document).ready(function($) {
+        // Foco no primeiro campo do código
+        //$('#Codigo1').focus();
+
+        // Avança automaticamente para o próximo campo de código quando preenchido
+        $('input[type="text"]').on('input', function () {
+            if ($(this).val().length == $(this).attr('maxlength')) {
+                $(this).next('input').focus();
+            }
+        });
+
+        // Lógica para envio do código de autenticação via AJAX
+        $('#confirmButton').click(function (e) {
+            e.preventDefault(); // Evita o envio tradicional do formulário
+
+            let viewModel = {
+                Codigo1: $('#Codigo1').val(),
+                Codigo2: $('#Codigo2').val(),
+                Codigo3: $('#Codigo3').val(),
+                Codigo4: $('#Codigo4').val(),
+                Codigo5: $('#Codigo5').val(),
+                Email: $('#email').val() // Pega o e-mail do campo hidden, se aplicável
+            };
+
+            $.ajax({
+                url: '@Url.Action("ValidarCodigoAutenticacao", "Login")', // URL correta do método no controller
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(viewModel),
+                success: function (response) {
+                    // Verifica se a resposta indica sucesso
+                    if (response.redirectUrl) {
+                        // Redireciona para o URL do dashboard
+                        window.location.href = response.redirectUrl;
+                    } else {
+                        alert("Código inválido, tente novamente.");
+                    }
+                },
+                error: function () {
+                    alert("Erro para validar o código. Tente novamente"); // Tratamento de erro
+                }
+            });
+        });
+
+        // Temporizador de 15 segundos para o botão de reenviar código
+        const timerDuration = 15000; // 15 segundos
+        const resendButton = $('#resendButton');
+        const spinner = $('#spinner');
+
+        // Inicia o temporizador
+        function startTimer() {
+            resendButton.prop('disabled', true).removeClass('enabled');
+            spinner.removeClass('hidden'); // Mostra o spinner
+
+            setTimeout(function () {
+                resendButton.prop('disabled', false).addClass('enabled');
+                spinner.addClass('hidden'); // Esconde o spinner
+            }, timerDuration);
+        }
+
+        // Chama a função para reenviar código após 15 segundos
+        resendButton.click(function () {
+            if (!resendButton.prop('disabled')) {
+                startTimer(); // Reinicia o temporizador
+                $.ajax({
+                    url: '@Url.Action("ReenviarCodigoAutenticacao", "Login")',
+                    type: 'POST',
+                    data: { email: $('#email').val() },
+                    success: function (response) {
+                        alert("Código reenviado com sucesso.");
+                    },
+                    error: function () {
+                        alert("Erro ao reenviar o código. Tente novamente.");
+                    }
+                });
+            }
+        });
+
+        // Inicia o temporizador ao carregar a página
+        startTimer();
+    });
+</script>

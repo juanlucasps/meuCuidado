@@ -11,6 +11,7 @@ using static meuCuidado.Dominio.Extensions.EnumExtension;
 using System.Collections.Generic;
 using System;
 using System.IO;
+using meuCuidado.Dominio.ViewModels;
 
 namespace meuCuidado.Controllers
 {

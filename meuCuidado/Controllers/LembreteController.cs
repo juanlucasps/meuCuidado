@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -17,7 +18,7 @@ namespace meuCuidado.Controllers
 
         public ActionResult Lembrete()
         {
-            var lembretes = _context.Lembretes.Include("Medicamento").ToList();
+            var lembretes = new List<Lembrete>();
             return View(lembretes);
         }
 
@@ -29,6 +30,9 @@ namespace meuCuidado.Controllers
                 try
                 {
                     lembrete.IdentificadorUnico = Guid.NewGuid();
+                    lembrete.RelacionamentoIdosoProfissional = new RelacionamentoIdosoProfissional();
+                    lembrete.RelacionamentoIdosoProfissionalId = 0;
+                    lembrete.Repete = false;
                     _context.Lembretes.Add(lembrete);
                     _context.SaveChanges();
                     return Json(new { success = true });
@@ -42,7 +46,7 @@ namespace meuCuidado.Controllers
             return Json(new { success = false });
         }
 
-        public JsonResult GetReminders(string date)
+        public ActionResult GetReminders(string date)
         {
             DateTime selectedDate;
             if (!DateTime.TryParse(date, out selectedDate))
@@ -51,12 +55,11 @@ namespace meuCuidado.Controllers
             }
 
             var lembretes = _context.Lembretes
-                .AsNoTracking() // Melhora a performance
-                .Where(l => DbFunctions.TruncateTime(l.DataHora) == selectedDate.Date) // Use TruncateTime
-                .Select(l => new { l.Descricao, l.DataHora })
+                .AsNoTracking()
+                .Where(l => DbFunctions.TruncateTime(l.DataHora) == selectedDate.Date)
                 .ToList();
 
-            return Json(lembretes, JsonRequestBehavior.AllowGet);
+            return PartialView("ListaLembretes", lembretes);
         }
 
         public ActionResult Edit(int id)
@@ -101,15 +104,6 @@ namespace meuCuidado.Controllers
             _context.Lembretes.Remove(lembrete);
             _context.SaveChanges();
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _context.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

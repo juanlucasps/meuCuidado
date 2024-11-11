@@ -1,4 +1,4 @@
-﻿@model AutenticacaoViewModel
+﻿@model meuCuidado.Dominio.ViewModels.AutenticacaoViewModel
 @{
     ViewBag.Title = "Login";
 }
@@ -44,33 +44,7 @@
 <!-- Verifica se deve exibir o popup -->
 @if (ViewBag.ShowPopup == true)
 {
-    <div class="modal fade show" id="authCodeModal" tabindex="-1" role="dialog" aria-labelledby="authCodeModalLabel" aria-hidden="true" style="display: block;">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="authCodeModalLabel">Autenticação de Dois Fatores</h5>
-                    <button type="button" id="fecharPopUp" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>@ViewBag.PopupMessage</p>
-                    <div class="d-flex justify-content-center">
-                        <!-- 5 quadradinhos para o código -->
-                        @Html.TextBoxFor(m => m.Codigo1, new { @maxlength = "1", @class = "form-control m-1 text-center", style = "width: 50px; font-size: 24px;" })
-                        @Html.TextBoxFor(m => m.Codigo2, new { @maxlength = "1", @class = "form-control m-1 text-center", style = "width: 50px; font-size: 24px;" })
-                        @Html.TextBoxFor(m => m.Codigo3, new { @maxlength = "1", @class = "form-control m-1 text-center", style = "width: 50px; font-size: 24px;" })
-                        @Html.TextBoxFor(m => m.Codigo4, new { @maxlength = "1", @class = "form-control m-1 text-center", style = "width: 50px; font-size: 24px;" })
-                        @Html.TextBoxFor(m => m.Codigo5, new { @maxlength = "1", @class = "form-control m-1 text-center", style = "width: 50px; font-size: 24px;" })
-                    </div>
-                    <input type="hidden" id="email" value="@Model.Email" />
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="confirmButton" class="btn btn-primary">Confirmar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+   
 }
 
 
@@ -90,43 +64,21 @@
             }
         });
 
-
-        // Lógica para envio do código de autenticação via AJAX
-        $('#confirmButton').click(function (e) {
-            e.preventDefault(); // Evita o envio tradicional do formulário
-
-            let viewModel = {
-                Codigo1: $('#Codigo1').val(),
-                Codigo2: $('#Codigo2').val(),
-                Codigo3: $('#Codigo3').val(),
-                Codigo4: $('#Codigo4').val(),
-                Codigo5: $('#Codigo5').val(),
-                Email: $('#email').val() // Pega o e-mail do campo hidden, se aplicável
-            };
-
+        $('#loginForm').submit(function (e) {
+            e.preventDefault();
             $.ajax({
-                url: '@Url.Action("ValidarCodigoAutenticacao", "Login")', // URL correta do método no controller
+                url: '@Url.Action("Login", "Login")',
                 type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(viewModel),
+                data: $(this).serialize(),
                 success: function (response) {
-                    if (response.success) {
-                        // Se o código for válido, redireciona para a Dashboard
-                        window.location.href = response.redirectUrl;
-                    } else {
-                        // Se o código for inválido, exibe uma mensagem de erro
-                        alert(response.message);
+                    if (!response.success) {
+                        $('#errorMessage').text(response.message).show();
                     }
                 },
-                error: function () {
-                    alert("Erro ao enviar os códigos."); // Tratamento de erro
+                error: function (xhr, status, error) {
+                    console.log('Erro na tentativa de login' + error);
                 }
-            });
-        });
-
-        $(document).on('click', '#fecharPopUp', function () {
-            debugger;
-            $('#authCodeModal').modal('hide');
+             });
         });
     });
 </script>

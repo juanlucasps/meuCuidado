@@ -9,7 +9,7 @@ namespace meuCuidado.Controllers
         private readonly MeuCuidadoDbContext _context = new MeuCuidadoDbContext();
 
         // Dashboard
-        public ActionResult Dashboard(TipoUsuario tipoUsuario)
+        public ActionResult Dashboard()
         {
             var usuarioLogado = User.Identity.Name;
             //var pessoa = _context.Usuarios.SingleOrDefault(p => p.Email == usuarioLogado);
@@ -35,9 +35,9 @@ namespace meuCuidado.Controllers
             //}
 
             //var pessoas = _context.Usuarios.ToList();
-            //ViewBag.UsuariosParaExibir = pessoas;
+            ViewBag.UsuariosParaExibir = null;
 
-            return View();
+            return View(new Usuario());
         }
     }
 }
