@@ -81,25 +81,23 @@ namespace meuCuidado.Controllers
                     _context.SaveChanges();
                 }
                 else
-                {
-                    return RedirectToAction("CadastroProfissional");
-                }
+                    return CadastroProfissional(pessoa);
 
                 return RedirectToAction("Login", "Login");
             }
-
-            return View(pessoa);
+            else
+                return View(pessoa);
         }
 
         // Tela de Cadastro do Profissional
-        public ActionResult CadastroProfissional()
+        public ActionResult CadastroProfissional(CadastroViewModel pessoa)
         {
-            return View();
+            return View("CadastroProfissional", pessoa);
         }
 
         [HttpPost]
         //public ActionResult CadastroProfissional(Usuario model, HttpPostedFileBase FotoDocumento, HttpPostedFileBase Documento, HttpPostedFileBase CertificadoBonsAntecedentes, HttpPostedFileBase CertificadoDispensa)
-        public ActionResult CadastroProfissional(CadastroProfissionalViewModel cadastroProfissionalViewModel, HttpPostedFileBase FotoDocumento, HttpPostedFileBase Documento, HttpPostedFileBase CertificadoBonsAntecedentes, HttpPostedFileBase CertificadoDispensa)
+        public ActionResult CadastroProfissional(CadastroViewModel cadastroProfissionalViewModel, HttpPostedFileBase FotoDocumento, HttpPostedFileBase Documento, HttpPostedFileBase CertificadoBonsAntecedentes, HttpPostedFileBase CertificadoDispensa)
         {
             if (ModelState.IsValid)
             {

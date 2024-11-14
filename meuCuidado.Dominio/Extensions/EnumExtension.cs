@@ -40,7 +40,7 @@ namespace meuCuidado.Dominio.Extensions
                        });
         }
 
-        private static string GetEnumDescription(Enum value)
+        public static string GetEnumDescription(Enum value)
         {
             var fieldInfo = value.GetType().GetField(value.ToString());
             var descriptionAttributes = (DescriptionAttribute[])fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);

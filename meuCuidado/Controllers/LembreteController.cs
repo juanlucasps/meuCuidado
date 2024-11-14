@@ -35,11 +35,12 @@ namespace meuCuidado.Controllers
                     lembrete.Repete = false;
                     _context.Lembretes.Add(lembrete);
                     _context.SaveChanges();
+                    TempData["Success"] = "Lembrete adicionado com sucesso!";
                     return Json(new { success = true });
                 }
                 catch (Exception ex)
                 {
-                    // Log the exception (ex) as needed
+                    TempData["Error"] = "Erro ao adicionar lembrete.";
                     return Json(new { success = false, message = "Erro ao criar lembrete." });
                 }
             }

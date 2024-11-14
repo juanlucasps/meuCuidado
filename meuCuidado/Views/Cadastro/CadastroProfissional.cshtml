@@ -1,4 +1,4 @@
-﻿@model meuCuidado.Dominio.ViewModels.CadastroProfissionalViewModel
+﻿@model meuCuidado.Dominio.ViewModels.CadastroViewModel
 @{
     ViewBag.Title = "Cadastro de Profissional";
 }
@@ -9,15 +9,15 @@
     @using (Html.BeginForm("CadastroProfissional", "Cadastro", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form" }))
     {
         <div class="form-group">
-            @Html.LabelFor(m => m.CPF, "CPF")
-            @Html.TextBoxFor(m => m.CPF, new { @class = "form-control", placeholder = "Digite seu CPF", required = "required" })
-            @Html.ValidationMessageFor(m => m.CPF, "", new { @class = "text-danger" })
+            @Html.LabelFor(m => m.Usuario.CPF, "CPF")
+            @Html.TextBoxFor(m => m.Usuario.CPF, new { @class = "form-control", placeholder = "Digite seu CPF", required = "required" })
+            @Html.ValidationMessageFor(m => m.Usuario.CPF, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.Genero, "Gênero")
-            @Html.DropDownListFor(m => m.Genero, new SelectList(new[] { "Feminino", "Masculino" }), new { @class = "form-control", id = "Genero" })
-            @Html.ValidationMessageFor(m => m.Genero, "", new { @class = "text-danger" })
+            @Html.LabelFor(m => m.Usuario.Genero, "Gênero")
+            @Html.DropDownListFor(m => m.Usuario.Genero, new SelectList(new[] { "Feminino", "Masculino" }), new { @class = "form-control", id = "Genero" })
+            @Html.ValidationMessageFor(m => m.Usuario.Genero, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">

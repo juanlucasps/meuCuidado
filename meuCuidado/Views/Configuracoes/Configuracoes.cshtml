@@ -1,0 +1,42 @@
+﻿@model IList<meuCuidado.Dominio.ViewModels.ConfiguracoesViewModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="configuracoes-container">
+    @foreach (var config in Model)
+    {
+        <div class="config-item">
+            <a href="@config.Link">@config.Titulo</a>
+            <p>@config.Descricao</p>
+        </div>
+    }
+</div>
+
+<style>
+    .configuracoes-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        background-color: #f0f0f0;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .config-item {
+        padding: 10px 15px;
+        background-color: #d9d9d9;
+        border-radius: 4px;
+        text-align: center;
+        font-size: 16px;
+    }
+
+    .config-item a {
+        text-decoration: none;
+        color: #000;
+    }
+
+    .config-item:hover {
+        background-color: #c0c0c0;
+    }
+</style>

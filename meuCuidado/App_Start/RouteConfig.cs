@@ -15,13 +15,29 @@ namespace meuCuidado
                 defaults: new { controller = "Login", action = "Login", id = UrlParameter.Optional }
             );
 
-            // configurar as demais rotas
-
             routes.MapRoute(
                 name: "Lembrete",
                 url: "{controller}/{action}",
                 defaults: new { controller = "Lembrete", action = "Lembrete" }
             );
+
+            routes.MapRoute(
+              name: "CriarConta",
+              url: "{controller}/{action}",
+              defaults: new { controller = "Login", action = "CriarConta" }
+           );
+
+           routes.MapRoute(
+               name: "Dashboard",
+               url: "{controller}/{action}",
+               defaults: new { controller = "Dashboard", action = "Dashboard" }
+           );
+
+           routes.MapRoute(
+               name: "Configuracoes",
+               url: "{controller}/{action}",
+               defaults: new { controller = "Configuracoes", action = "Configuracoes" }
+           );
         }
     }
 }

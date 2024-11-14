@@ -1,84 +1,69 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - Meu Aplicativo ASP.NET</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/Content/estilos.css" rel="stylesheet" />
-    @RenderSection("styles", required: false)
-    <link rel="stylesheet" href="~/Content/bootstrap.css" />
-    <link rel="stylesheet" href="~/Content/site.css" />
-    @*<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css" rel="stylesheet" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>*@
-    <style>
-        /* Estilo para o footer fixo */
-        footer {
-            position: relative; /* Mudar de fixed para relative */
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 10px 0;
-            background-color: #f8f9fa; /* Cor do fundo do footer */
-            border-top: 1px solid black; /* Linha superior */
-        }
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>@ViewBag.Title - Meu Aplicativo ASP.NET</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="~/Content/estilos.css" rel="stylesheet" />
+        @RenderSection("styles", required: false)
+        <link rel="stylesheet" href="~/Content/bootstrap.css" />
+        <link rel="stylesheet" href="~/Content/site.css" />
+        <link rel="stylesheet" type="text/css" href="~/Content/toaster.min.css" />
+        <style>
+            /* Estilo para o footer fixo */
+            footer {
+                position: relative; /* Mudar de fixed para relative */
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 10px 0;
+                background-color: #f8f9fa; /* Cor do fundo do footer */
+                border-top: 1px solid black; /* Linha superior */
+            }
 
-        /* Para garantir que o conteúdo não fique atrás do footer */
-        .body-content {
-            padding-bottom: 60px; /* Ajuste para o tamanho do footer */
-        }
+            /* Para garantir que o conteúdo não fique atrás do footer */
+            .body-content {
+                padding-bottom: 60px; /* Ajuste para o tamanho do footer */
+            }
 
-        .fc {
-            max-width: 800px;
-            margin: 20px auto;
-        }
-
-        .reminder-container {
-            padding: 20px;
-            max-width: 800px;
-            margin: 20px auto;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .reminder {
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-sm navbar-light bg-light" style="border-bottom: 1px solid black;">
-        <div class="container">
-            @Html.ActionLink("meuCuidado", "Login", "Login", new { area = "" }, new { @class = "navbar-brand" })
-            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">@Html.ActionLink("Sobre", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li class="nav-item">@Html.ActionLink("Ajuda", "Ajuda", "Ajuda", new { area = "" }, new { @class = "nav-link" })</li>
-                </ul>
+            .fc {
+                max-width: 800px;
+                margin: 20px auto;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-sm navbar-light bg-light" style="border-bottom: 1px solid black;">
+            <div class="container">
+                @Html.ActionLink("meuCuidado", "Login", "Login", new { area = "" }, new { @class = "navbar-brand" })
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav flex-grow-1">
+                        @*<li class="nav-item">@Html.ActionLink("Sobre", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>*@
+                        <li class="nav-item">@Html.ActionLink("Ajuda", "Ajuda", "Ajuda", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">@Html.ActionLink("Configurações", "Configuracoes", "Configuracoes", new { area = "" }, new { @class = "nav-link" })</li>
+                    </ul>
+                </div>
             </div>
+        </nav>
+
+        <div class="container body-content" style="padding: 20px;">
+            @RenderBody()
+            <hr />
         </div>
-    </nav>
 
-    <div class="container body-content" style="padding: 20px;">
-        @RenderBody()
-        <hr />
-    </div>
+        <!-- Footer fixo -->
+        <footer>
+            <p class="text-center">&copy; @DateTime.Now.Year - meuCuidado</p>
+        </footer>
 
-    <!-- Footer fixo -->
-    <footer>
-        <p class="text-center">&copy; @DateTime.Now.Year - meuCuidado</p>
-    </footer>
-
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    @RenderSection("scripts", required: false)
-</body>
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+        <script src="~/Scripts/toaster.min.js"></script>
+        @RenderSection("scripts", required: false)
+    </body>
 </html>

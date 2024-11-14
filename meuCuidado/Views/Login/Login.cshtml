@@ -20,8 +20,6 @@
     <button type="submit" class="btn btn-primary">Entrar</button>
 }
 
-<hr />
-
 <!-- Botões de login com Google e Facebook -->
 <div class="social-login-buttons">
     <a href="@Url.Action("ExternalLogin", "Login", new { provider = "Google" })" class="btn btn-google">
@@ -40,48 +38,6 @@
 <p>
     Não tem uma conta? <a href="@Url.Action("Cadastro", "Cadastro")">Cadastre-se aqui</a>
 </p>
-
-<!-- Verifica se deve exibir o popup -->
-@if (ViewBag.ShowPopup == true)
-{
-   
-}
-
-
-<!-- Adicionando o jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
-<script>
-    jQuery(document).ready(function($) {
-        // Foco no primeiro campo do código
-        //$('#Codigo1').focus();
-
-        // Avança automaticamente para o próximo campo de código quando preenchido
-        $('input[type="text"]').on('input', function () {
-            if ($(this).val().length == $(this).attr('maxlength')) {
-                $(this).next('input').focus();
-            }
-        });
-
-        $('#loginForm').submit(function (e) {
-            e.preventDefault();
-            $.ajax({
-                url: '@Url.Action("Login", "Login")',
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function (response) {
-                    if (!response.success) {
-                        $('#errorMessage').text(response.message).show();
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.log('Erro na tentativa de login' + error);
-                }
-             });
-        });
-    });
-</script>
 
 <!-- Estilo minimalista -->
 <style>
@@ -103,7 +59,6 @@
         border-radius: 4px;
         font-size: 14px;
         text-decoration: none;
-        transition: background-color 0.3s ease;
     }
 
     .btn-google {
@@ -133,30 +88,27 @@
         height: 20px;
         margin-right: 10px;
     }
-
-    /* Estilos do popup */
-    .popup {
-        display: block;
-        position: fixed;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        border: 1px solid #ddd;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-    }
-
-    .popup-content {
-        text-align: center;
-    }
-
-        .popup-content p {
-            margin-bottom: 15px;
-        }
-
-    .popup button {
-        margin-top: 10px;
-    }
 </style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script>
+    jQuery(document).ready(function($) {
+        $('#loginForm').submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: '@Url.Action("Login", "Login")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (!response.success) {
+                        $('#errorMessage').text(response.message).show();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('Erro na tentativa de login' + error);
+                }
+             });
+        });
+    });
+</script>

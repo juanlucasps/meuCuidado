@@ -3,25 +3,74 @@
     ViewBag.Title = "Dashboard";
 }
 
-<h2>@ViewBag.Title</h2>
+<!-- Botões grandes para Perfil e Lembretes -->
+<div class="d-flex justify-content-around mb-4">
+    <!-- Botão Perfil -->
+    <a href="javascript:void(0);" id="perfilBtn" class="btn btn-primary btn-lg">
+        <i class="fa fa-user"></i> Perfil
+    </a>
 
-@if (ViewBag.UsuariosParaExibir != null)
-{
-    foreach (var usuario in ViewBag.UsuariosParaExibir)
-    {
-        <div class="col-md-1">
-            <!-- Cada quadrado ocupa 1/12 da tela -->
-            <div class="card" style="margin: 10px;">
-                <img src="https://i.pinimg.com/564x/ac/0f/41/ac0f419e977af681516e00829c5393ee.jpg" alt="Descrição da imagem" class="card-img-top" style="max-width:100%; height:auto;" />
-                <div class="card-body">
-                    <h5 class="card-title">@usuario.Nome</h5>
-                    <p class="card-text">@usuario.Email</p>
-                </div>
-            </div>
-        </div>
-    }
-}
-else
-{
-    <p>Nenhum usuário para exibir.</p>
-}
+    <!-- Botão Lembretes -->
+    <a href="javascript:void(0);" id="lembreteBtn" class="btn btn-success btn-lg">
+        <i class="fa fa-bell"></i> Lembretes
+    </a>
+</div>
+
+<!-- Div para exibir as views completas -->
+<div id="contentContainer">
+    <!-- O conteúdo será carregado aqui -->
+</div>
+
+<!-- Incluindo jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    jQuery(document).ready(function ($) {
+        // Função para carregar a view de Perfil
+        function carregarPerfil() {
+            $.ajax({
+                url: '@Url.Action("Perfil", "Perfil")', // Ação para a view de Perfil
+                type: 'GET',
+                success: function (data) {
+                    $('#contentContainer').html(data); // Coloca a view de perfil no container
+                    // Mudar a aparência do botão selecionado
+                    $('#perfilBtn').addClass('active'); // Adiciona classe active ao botão de perfil
+                    $('#lembreteBtn').removeClass('active'); // Remove a classe active do botão de lembretes
+                },
+                error: function () {
+                    alert("Erro ao carregar perfis.");
+                }
+            });
+        }
+
+        // Função para carregar a view de Lembretes
+        function carregarLembrete() {
+            $.ajax({
+                url: '@Url.Action("Lembrete", "Lembrete")', // Ação para a view de lembretes
+                type: 'GET',
+                success: function (data) {
+                    $('#contentContainer').html(data); // Coloca a view de lembretes no container
+                    // Mudar a aparência do botão selecionado
+                    $('#lembreteBtn').addClass('active'); // Adiciona classe active ao botão de lembretes
+                    $('#perfilBtn').removeClass('active'); // Remove a classe active do botão de perfil
+                },
+                error: function () {
+                    alert("Erro ao carregar tela de lembretes.");
+                }
+            });
+        }
+
+        // Carregar o Perfil por padrão ao carregar a página
+        carregarPerfil();
+
+        // Carregar a view de Perfil quando o botão for clicado
+        $('#perfilBtn').on('click', function () {
+            carregarPerfil();
+        });
+
+        // Carregar a view de Lembretes quando o botão for clicado
+        $('#lembreteBtn').on('click', function () {
+            carregarLembrete();
+        });
+    });
+</script>
