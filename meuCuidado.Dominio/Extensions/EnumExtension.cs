@@ -23,6 +23,39 @@ namespace meuCuidado.Dominio.Extensions
             Fisioterapeuta = 4
         }
 
+        public enum TipoDocumento
+        {
+            [Description("Foto do Documento")]
+            FotoDocumento = 1,
+
+            [Description("Documento de Identificação")]
+            Documento = 2,
+
+            [Description("Certificado de Bons Antecedentes")]
+            CertificadoBonsAntecedentes = 3,
+
+            [Description("Certificado de Dispensa")]
+            CertificadoDispensa = 4
+        }
+
+        public enum TipoExtensaoDocumento
+        {
+            [Description("Imagem JPG")]
+            JPG = 1,
+
+            [Description("Imagem PNG")]
+            PNG = 2,
+
+            [Description("Documento PDF")]
+            PDF = 3,
+
+            [Description("Documento Word")]
+            DOCX = 4,
+
+            [Description("Documento Excel")]
+            XLSX = 5
+        }
+
         public static IEnumerable<SelectListItem> ToSelectList<TEnum>() where TEnum : struct
         {
             var enumType = typeof(TEnum);

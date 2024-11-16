@@ -1,0 +1,67 @@
+﻿@model meuCuidado.Dominio.ViewModels.PerfilDetalhadoViewModel
+@{
+    ViewBag.Title = "Perfil Detalhado";
+    Layout = null;
+}
+
+<div class="perfil-detalhado">
+    @*TODO:
+imagem e dados de usuario
+imagem e dados de usuario
+imagem e dados de usuario
+imagem e dados de usuario
+imagem e dados de usuario*@
+    <!-- Informações de Currículo -->
+    <div class="curriculo">
+        <h3>Currículo</h3>
+        @*<p><strong>Nome:</strong> @Model?.Curriculo.Nome</p>*@
+        @*<p><strong>Anos de Experiência:</strong> @Model?.Curriculo.AnosExperiencia</p>*@
+        @*<p><strong>Escolaridade:</strong> @Model?.Curriculo.Escolaridade</p>*@
+
+        <h4>Cursos:</h4>
+        <ul>
+            @foreach (var curso in Model.Curriculo.Cursos)
+            {
+                <li>@curso</li>
+            }
+        </ul>
+
+        <h4>Experiências:</h4>
+        <ul>
+            @foreach (var experiencia in Model.Curriculo.Experiencias)
+            {
+                <li>@experiencia</li>
+            }
+        </ul>
+
+        <h4>Redes Sociais:</h4>
+        <ul>
+            @foreach (var redeSocial in Model.Curriculo.RedesSociais)
+            {
+                <li>@redeSocial</li>
+            }
+        </ul>
+    </div>
+
+    <!-- Informações de Avaliação -->
+    <div class="avaliacao">
+        <h3>Avaliação</h3>
+        <p><strong>Média de Avaliação:</strong> @Model.Curriculo.AvaliacaoMedia</p>
+        <p><strong>Número de Avaliações:</strong> @Model.Curriculo.NumeroAvaliacoes</p>
+        <p>
+            <strong>Avaliação do Usuário:</strong>
+            @if (Model.Curriculo.AvaliacaoMedia >= 4)
+            {
+                <span>Excelente</span>
+            }
+            else if (Model.Curriculo.AvaliacaoMedia >= 3)
+            {
+                <span>Bom</span>
+            }
+            else
+            {
+                <span>Regular</span>
+            }
+        </p>
+    </div>
+</div>

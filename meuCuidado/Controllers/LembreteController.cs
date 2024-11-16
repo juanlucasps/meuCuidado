@@ -18,6 +18,8 @@ namespace meuCuidado.Controllers
 
         public ActionResult Lembrete()
         {
+            var medicamentos = _context.Medicamentos.ToList();
+            ViewBag.Medicamentos = medicamentos; // Envia lista de medicamentos para a view
             var lembretes = new List<Lembrete>();
             return View(lembretes);
         }
@@ -31,17 +33,16 @@ namespace meuCuidado.Controllers
                 {
                     lembrete.IdentificadorUnico = Guid.NewGuid();
                     lembrete.RelacionamentoIdosoProfissional = new RelacionamentoIdosoProfissional();
-                    lembrete.RelacionamentoIdosoProfissionalId = 0;
-                    lembrete.Repete = false;
+                    lembrete.RelacionamentoIdosoProfissionalId = 1; // Definir de acordo com a lógica do projeto
+
                     _context.Lembretes.Add(lembrete);
                     _context.SaveChanges();
-                    TempData["Success"] = "Lembrete adicionado com sucesso!";
+
                     return Json(new { success = true });
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    TempData["Error"] = "Erro ao adicionar lembrete.";
-                    return Json(new { success = false, message = "Erro ao criar lembrete." });
+                    return Json(new { success = false });
                 }
             }
             return Json(new { success = false });

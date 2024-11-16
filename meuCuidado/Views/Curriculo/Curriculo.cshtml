@@ -1,0 +1,74 @@
+﻿@model meuCuidado.Dominio.Models.Curriculo
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header text-center">
+            <img src="https://via.placeholder.com/150" alt="Foto de perfil" class="img-fluid rounded-circle mb-3" style="max-width: 150px;">
+            @*<h5>@model.Nome</h5>*@
+        </div>
+        <div class="card-body">
+            <!-- Avaliação -->
+            <div class="text-center mb-3">
+                @*<span>
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= Model.AvaliacaoMedia)
+                        {
+                            <i class="fa fa-star text-warning"></i>
+                        }
+                        else
+                        {
+                            <i class="fa fa-star text-secondary"></i>
+                        }
+                    }
+                </span>
+                <span>(@Model.NumeroAvaliacoes)</span>*@
+            </div>
+
+            <!-- Detalhes -->
+            <p><strong>Cuidadora de idosos há:</strong> @Model.AnosExperiencia anos</p>
+            <p><strong>Escolaridade:</strong> @Model.Escolaridade</p>
+
+            <!-- Cursos -->
+            <p><strong>Cursos:</strong></p>
+            <ul>
+                @foreach (var curso in Model.Cursos)
+                {
+                    <li>@curso</li>
+                }
+            </ul>
+
+            <!-- Experiências -->
+            <p><strong>Experiência:</strong></p>
+            <ul>
+                @foreach (var experiencia in Model.Experiencias)
+                {
+                    <li>@experiencia</li>
+                }
+            </ul>
+
+            <!-- Redes Sociais -->
+            <p><strong>Redes Sociais:</strong></p>
+            <div>
+                @if (Model.RedesSociais != null)
+                {
+                    foreach (var rede in Model.RedesSociais)
+                    {
+                        if (rede.Contains("linkedin"))
+                        {
+                            <a href="@rede" target="_blank"><i class="fa fa-linkedin fa-2x me-2 text-primary"></i></a>
+                        }
+                        else if (rede.Contains("facebook"))
+                        {
+                            <a href="@rede" target="_blank"><i class="fa fa-facebook fa-2x me-2 text-primary"></i></a>
+                        }
+                        else if (rede.Contains("instagram"))
+                        {
+                            <a href="@rede" target="_blank"><i class="fa fa-instagram fa-2x text-danger"></i></a>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

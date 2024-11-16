@@ -27,17 +27,28 @@ namespace meuCuidado
               defaults: new { controller = "Login", action = "CriarConta" }
            );
 
-           routes.MapRoute(
-               name: "Dashboard",
-               url: "{controller}/{action}",
-               defaults: new { controller = "Dashboard", action = "Dashboard" }
-           );
+            routes.MapRoute(
+                name: "Dashboard",
+                url: "{controller}/{action}",
+                defaults: new { controller = "Dashboard", action = "Dashboard" }
+            );
 
-           routes.MapRoute(
-               name: "Configuracoes",
-               url: "{controller}/{action}",
-               defaults: new { controller = "Configuracoes", action = "Configuracoes" }
-           );
+            routes.MapRoute(
+                name: "Configuracoes",
+                url: "{controller}/{action}",
+                defaults: new { controller = "Configuracoes", action = "Configuracoes" }
+            );
+
+            routes.MapRoute(
+    name: "Curriculo",
+                url: "{controller}/{action}",
+    defaults: new { controller = "Curriculo", action = "Curriculo" }
+);
+            routes.MapRoute(
+    name: "EditarCurriculo",
+                url: "{controller}/{action}",
+    defaults: new { controller = "Curriculo", action = "EditarCurriculo" }
+);
         }
     }
 }

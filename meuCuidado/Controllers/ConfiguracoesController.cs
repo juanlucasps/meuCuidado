@@ -14,8 +14,8 @@ namespace meuCuidado.Controllers
             var configuracoes = new List<ConfiguracoesViewModel>
             {
                 // TODO: ALTERAR AS ROTAS E REMOVER AS VIEWS
-                new ConfiguracoesViewModel { Titulo = "Perfil", Descricao = "Editar informações do perfil", Link = Url.Action("Perfil", "Configuracoes") },
-                new ConfiguracoesViewModel { Titulo = "Currículo", Descricao = "Editar ou visualizar currículo", Link = Url.Action("Curriculo", "Configuracoes") },
+                new ConfiguracoesViewModel { Titulo = "Perfil", Descricao = "Editar informações do perfil", Link = Url.Action("EditarPerfil", "Perfil") },
+                new ConfiguracoesViewModel { Titulo = "Currículo", Descricao = "Editar ou visualizar currículo", Link = Url.Action("EditarCurriculo", "Curriculo") },
                 new ConfiguracoesViewModel { Titulo = "Avaliações", Descricao = "Visualizar avaliações recebidas", Link = Url.Action("Avaliacoes", "Configuracoes") }
             };
 

@@ -1,0 +1,37 @@
+﻿@model meuCuidado.Dominio.Models.Medicamento
+
+@{
+    ViewBag.Title = "Inserir Medicamento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2>Inserir Medicamento</h2>
+    <form asp-action="AdicionarMedicamento" asp-controller="Medicamento" method="post">
+        <div class="form-group">
+            <label for="Nome">Nome do Medicamento</label>
+            <input type="text" class="form-control" id="Nome" name="Nome" required />
+        </div>
+        <div class="form-group">
+            <label for="Dosagem">Dosagem</label>
+            <input type="text" class="form-control" id="Dosagem" name="Dosagem" required />
+        </div>
+        <div class="form-group">
+            <label for="DataHoraPrimeiroAlerta">Primeiro Alerta</label>
+            <input type="datetime-local" class="form-control" id="DataHoraPrimeiroAlerta" name="DataHoraPrimeiroAlerta" required />
+        </div>
+        <div class="form-group">
+            <label for="FormaFarmaceutica">Forma Farmacêutica</label>
+            <input type="text" class="form-control" id="FormaFarmaceutica" name="FormaFarmaceutica" />
+        </div>
+        <div class="form-group">
+            <label for="DuracaoEmDias">Duração em Dias</label>
+            <input type="number" class="form-control" id="DuracaoEmDias" name="DuracaoEmDias" />
+        </div>
+        <div class="form-group">
+            <label for="Observacoes">Observações</label>
+            <textarea class="form-control" id="Observacoes" name="Observacoes"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Salvar Medicamento</button>
+    </form>
+</div>

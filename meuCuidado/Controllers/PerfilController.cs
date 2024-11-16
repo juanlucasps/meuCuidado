@@ -1,4 +1,5 @@
 ﻿using meuCuidado.Dominio.Models;
+using meuCuidado.Dominio.ViewModels;
 using System.Linq;
 using System.Web.Mvc;
 using static meuCuidado.Dominio.Extensions.EnumExtension;
@@ -32,17 +33,39 @@ namespace meuCuidado.Controllers
             return View(new Usuario());
         }
 
-        // Exibe o perfil do usuário com base no ID
-        public ActionResult DetalharPerfil(int id)
+        public ActionResult PerfilDetalhado(int id)
         {
-            //var usuario = _context.Pessoas.SingleOrDefault(p => p.Id == id);
-            //if (usuario == null)
+            var perfilDetalhado = new PerfilDetalhadoViewModel()
+            {
+                CuidadorDeIdoso = _context.CuidadoresDeIdoso.SingleOrDefault(p => p.Id == id),
+                Fisioterapeuta = _context.Fisioterapeutas.SingleOrDefault(p => p.Id == id)
+            };
+
+            if (perfilDetalhado.CuidadorDeIdoso == null && perfilDetalhado.Fisioterapeuta == null)
+            {
+                return HttpNotFound();
+            }
+            else
+            {
+                perfilDetalhado.Curriculo = _context.Curriculos.SingleOrDefault(p => p.Id == id); // colocar relação com usuário
+            }
+
+            return View(perfilDetalhado);
+        }
+
+        public ActionResult EditarPerfil(int id)
+        {
+            var cuidadorDeIdoso = _context.CuidadoresDeIdoso.SingleOrDefault(p => p.Id == id);
+            var fisioterapeuta = _context.Fisioterapeutas.SingleOrDefault(p => p.Id == id);
+
+            //if (cuidadorDeIdoso == null && fisioterapeuta == null)
             //{
             //    return HttpNotFound();
             //}
 
-            return View();
-            //return View(usuario);
+            // TODO: aplicar regra para visualizar perfil
+
+            return View(); // TODO: Passar todos os valores
         }
     }
 }
