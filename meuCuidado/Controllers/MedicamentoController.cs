@@ -13,6 +13,11 @@ namespace meuCuidado.Controllers
             _context = new MeuCuidadoDbContext();
         }
 
+        public ActionResult AdicionarMedicamento()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult AdicionarMedicamento(Medicamento medicamento)
         {

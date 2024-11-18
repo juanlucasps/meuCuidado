@@ -79,6 +79,7 @@
     <Compile Include="ViewModels\AutenticacaoViewModel.cs" />
     <Compile Include="Models\Avaliacao.cs" />
     <Compile Include="ViewModels\CadastroProfissionalViewModel .cs" />
+    <Compile Include="ViewModels\CadastroTutorEMedicoDoIdosoViewModel.cs" />
     <Compile Include="ViewModels\CadastroViewModel.cs" />
     <Compile Include="Models\CuidadorDeIdoso.cs" />
     <Compile Include="Models\Fisioterapeuta.cs" />

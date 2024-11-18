@@ -1,5 +1,6 @@
 ﻿using meuCuidado.Dominio.Models;
 using meuCuidado.Dominio.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,25 +40,12 @@ namespace meuCuidado.Controllers
                         Senha = pessoa.Usuario.Senha,
                         DataCadasto = DateTime.Now,
                         DataNascimento = DateTime.Now,
-                        NecessidadesEspeciais = false,
-                        Tutor = new Tutor
-                        {
-                            IdentificadorUnico = Guid.NewGuid(),
-                            Nome = pessoa.Usuario.Nome,
-                            Email = pessoa.Usuario.Email,
-                            CPF = pessoa.Usuario.CPF,
-                            Endereco = pessoa.Usuario.Endereco,
-                            Telefone = pessoa.Usuario.Telefone,
-                            Senha = pessoa.Usuario.Senha,
-                            DataCadasto = DateTime.Now,
-                            RelacaoComIdoso = TipoUsuario.Tutor.ToString(),
-                            IdadeDoIdoso = DateTime.Now,
-                            NecessidadesEspeciais = false,
-                        }
+                        NecessidadesEspeciais = false
                     };
 
-                    _context.Idosos.Add(idoso);
-                    _context.SaveChanges();
+                    TempData["Idoso"] = JsonConvert.SerializeObject(idoso);
+
+                    return RedirectToAction("CadastroTutorEMedicoDoIdoso");
                 }
                 else if (pessoa.TipoUsuario == TipoUsuario.Tutor)
                 {
@@ -88,6 +76,56 @@ namespace meuCuidado.Controllers
             else
                 return View(pessoa);
         }
+
+        public ActionResult CadastroTutorEMedicoDoIdoso()
+        {
+            var idosoJson = TempData["Idoso"] as string;
+            if (string.IsNullOrEmpty(idosoJson))
+            {
+                // Se não encontrar os dados, redireciona de volta para a página anterior
+                return RedirectToAction("Cadastro");
+            }
+
+            // Desserializa os dados do idoso
+            var idoso = JsonConvert.DeserializeObject<Idoso>(idosoJson);
+
+            // Cria um ViewModel para o cadastro de Tutor e Médico
+            var viewModel = new CadastroTutorEMedicoDoIdosoViewModel
+            {
+                Idoso = idoso,
+                Tutor = new Tutor(),
+                Medicos = new List<Medico>() // Inicializa a lista de médicos
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult SalvarCadastroTutorEMedico(CadastroTutorEMedicoDoIdosoViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                // Atualiza o Tutor do Idoso
+                if (viewModel.Idoso != null)
+                {
+                    viewModel.Idoso.Tutor.Email = viewModel.Tutor.Email; // O e-mail passa a ser igual ao do tutor se for diferente;
+
+                    // Adiciona o médico (caso tenha sido inserido)
+                    foreach (var medico in viewModel.Medicos)
+                    {
+                        _context.Medicos.Add(medico);
+                    }
+
+                    _context.SaveChanges();
+
+                    return RedirectToAction("Sucesso", "Cadastro"); // Redireciona para uma tela de sucesso
+                }
+            }
+
+            return View(viewModel); // Retorna a tela de cadastro com erros, caso exista algum
+        }
+
+
 
         // Tela de Cadastro do Profissional
         public ActionResult CadastroProfissional(CadastroViewModel pessoa)
@@ -214,7 +252,7 @@ namespace meuCuidado.Controllers
                     UsuarioId = usuarioId
                 };
 
-                _context.Documentos.Add(documento);
+                //_context.Documentos.Add(documento);
                 _context.SaveChanges();
             }
         }

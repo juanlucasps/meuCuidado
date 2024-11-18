@@ -19,6 +19,7 @@ namespace meuCuidado.Dominio.Models
         public DbSet<Tutor> Tutores { get; set; }
         public DbSet<Documento> Documentos { get; set; }
         public DbSet<Curriculo> Curriculos { get; set; }
+        public DbSet<Medico> Medicos { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

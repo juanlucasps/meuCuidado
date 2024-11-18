@@ -38,6 +38,17 @@
                 }
             </select>
         </div>
+        <div class="form-group">
+            <label for="DosagemId">Dosagem (Opcional)</label>
+            <select class="form-control" id="DosagemId" name="DosagemId">
+                <option value="">Nenhum</option>
+                @foreach (var medicamento in ViewBag.Medicamentos)
+                {
+                    <option value="@medicamento.Id">@medicamento.Dosagem</option>
+                }
+            </select>
+        </div>
+        <button type="button" class="btn btn-link" onclick="window.location.href='@Url.Action("AdicionarMedicamento", "Medicamento")'">Adicionar Novo Medicamento</button>
         <button type="submit" class="btn btn-primary">Adicionar Lembrete</button>
     </form>
 </div>
@@ -116,7 +127,6 @@
         let currentMonth = new Date();
         const monthYear = document.getElementById('monthYear');
         const calendarGrid = document.getElementById('calendarGrid');
-        const reminderList = document.getElementById('reminderList');
         let selectedDate = '';
 
         function renderCalendar() {
@@ -174,6 +184,7 @@
             const descricao = document.getElementById('descricao').value.trim();
             const dataHora = new Date(selectedDate + 'T' + document.getElementById('dataHora').value);
             const medicamentoId = document.getElementById('MedicamentoId').value;
+            const dosagemId = document.getElementById('DosagemId').value;
 
             if (!descricao) {
                 alert('A descrição do lembrete é obrigatória.');
@@ -187,7 +198,8 @@
                     Descricao: descricao,
                     DataHora: dataHora,
                     Repete: false,
-                    MedicamentoId: medicamentoId || null
+                    MedicamentoId: medicamentoId || null,
+                    DosagemId: dosagemId || null
                 })
             })
                 .then(response => response.json())
