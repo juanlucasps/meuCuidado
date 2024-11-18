@@ -1,33 +1,82 @@
-﻿@using meuCuidado.Dominio.Models
-@model meuCuidado.Dominio.Models.Usuario
-
+﻿@model meuCuidado.Dominio.Models.Usuario
 @{
     ViewBag.Title = "Perfil";
+    Layout = null;
 }
+<div class="container">
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Usuário do meuCuidado desde:</span>
+                <input type="date" id="FiltroDataCadastro" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select id="FiltroTipoUsuario" class="form-control">
+                <option value="">Filtrar por profissional</option>
+                <option value="1">Cuidador</option>
+                <option value="2">Fisioterapeuta</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input type="text" id="FiltroLocalizacao" placeholder="Localização" class="form-control" />
+        </div>
+    </div>
 
-<h2>@Model.Nome</h2>
+    <!-- Exibindo os usuários -->
+    <div class="row">
+        @if (ViewBag.UsuariosParaExibir != null)
+        {
+            foreach (var usuario in ViewBag.UsuariosParaExibir)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 col-12" style="margin-bottom: 20px;">
+                    <a href="@Url.Action("PerfilDetalhado", "Perfil", new { id = usuario.Id })">
+                        <div class="card" style="height: 450px;">
+                            <img src="https://i.pinimg.com/564x/ac/0f/41/ac0f419e977af681516e00829c5393ee.jpg" alt="Descrição da imagem" class="card-img-top" style="max-width:100%; height:250px; object-fit: cover;" />
+                            <div class="card-body" style="padding: 20px;">
+                                <h5 class="card-title" style="font-size: 1.25rem;">@usuario.Nome</h5>
+                                <p class="card-text" style="font-size: 1rem;">@usuario.Email</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+        else
+        {
+            <p>Nenhum usuário para exibir.</p>
+        }
+    </div>
+</div>
 
-<p><strong>CPF:</strong> @Model.CPF</p>
-<p><strong>Endereço:</strong> @Model.Endereco</p>
-<p><strong>Telefone:</strong> @Model.Telefone</p>
-<p><strong>Email:</strong> @Model.Email</p>
+@*<script>
+    // TODO: Mudar o script para manipular os dados da viewbag de usuarios para exibir // mas uma melhor prática é separar na _UsuariosLista (pessoasLista)
+    $(document).ready(function () {
+        // Função para aplicar os filtros
+        function aplicarFiltros() {
+            var nome = $("#FiltroNome").val();
+            var tipoUsuario = $("#FiltroTipoUsuario").val();
+            var email = $("#FiltroEmail").val();
+            var dataCadastro = $("#FiltroDataCadastro").val();
 
-@*@if (Model is Idoso idoso)
-{
-    <p><strong>Data de Nascimento:</strong> @idoso.DataNascimento.ToShortDateString()</p>
-}
+            // Enviar os filtros via AJAX
+            $.ajax({
+                url: '@Url.Action("Perfil", "Usuario")', // Altere "Usuario" para o nome do seu controlador
+                data: {
+                    nome: nome,
+                    tipoUsuario: tipoUsuario,
+                    email: email,
+                    dataCadastro: dataCadastro
+                },
+                success: function (data) {
+                    // Atualizar os dados na tela
+                    $('.row').html(data);
+                }
+            });
+        }
 
-@if (Model is CuidadorDeIdoso cuidador)
-{
-    <p><strong>Registro Profissional:</strong> @cuidador.RegistroProfissional</p>
-}
-
-@if (Model is Fisioterapeuta fisioterapeuta)
-{
-    <p><strong>Registro Profissional:</strong> @fisioterapeuta.RegistroProfissional</p>
-}
-
-@if (Model is Familiar familiar)
-{
-    <p><strong>Relação com Idoso:</strong> @familiar.RelacaoComIdoso</p>*@
-}
+        // Aplique os filtros quando algum campo mudar
+        $("#FiltroNome, #FiltroTipoUsuario, #FiltroEmail, #FiltroDataCadastro").on('change', aplicarFiltros);
+    });
+</script>*@

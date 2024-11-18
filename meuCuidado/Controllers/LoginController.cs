@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using static meuCuidado.Dominio.Extensions.EnumExtension;
 
 namespace meuCuidado.Controllers
 {
@@ -43,6 +44,15 @@ namespace meuCuidado.Controllers
                 var codigoAutenticacao = _emailController.EnviarEmailAutenticacao(email);
                 Session["CodigoAutenticacao"] = codigoAutenticacao;
                 Session["SenhaCodificada"] = senha;
+
+                if (cuidadorDeIdoso != null )
+                    Session["TipoUsuario"] = GetEnumDescription(TipoUsuario.Cuidador);
+                else if (fisioterapeuta != null)
+                    Session["TipoUsuario"] = GetEnumDescription(TipoUsuario.Fisioterapeuta);
+                else if (tutor != null)
+                    Session["TipoUsuario"] = GetEnumDescription(TipoUsuario.Tutor);
+                else if (idoso != null)
+                    Session["TipoUsuario"] = GetEnumDescription(TipoUsuario.Idoso);
 
                 var autenticacaoViewModel = new AutenticacaoViewModel
                 {

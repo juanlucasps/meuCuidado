@@ -1,0 +1,36 @@
+﻿@model meuCuidado.Dominio.Models.Medicamento
+@{
+    ViewBag.Title = "Adicionar Medicamento";
+}
+
+<h2>Adicionar Medicamento</h2>
+
+@using (Html.BeginForm())
+{
+    @*@Html.AntiForgeryToken()*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.Nome)
+        @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Dosagem)
+        @Html.TextBoxFor(model => model.Dosagem, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.DataHoraPrimeiroAlerta)
+        @Html.TextBoxFor(model => model.DataHoraPrimeiroAlerta, new { @class = "form-control", type = "datetime-local" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.FormaFarmaceutica)
+        @Html.TextBoxFor(model => model.FormaFarmaceutica, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.DuracaoEmDias)
+        @Html.TextBoxFor(model => model.DuracaoEmDias, new { @class = "form-control", type = "number" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Observacoes)
+        @Html.TextAreaFor(model => model.Observacoes, new { @class = "form-control" })
+    </div>
+    <button type="submit" class="btn btn-primary">Adicionar Medicamento</button>
+}

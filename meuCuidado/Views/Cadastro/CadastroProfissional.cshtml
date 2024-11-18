@@ -1,4 +1,4 @@
-﻿@model meuCuidado.Dominio.ViewModels.CadastroProfissionalViewModel
+﻿@model meuCuidado.Dominio.ViewModels.CadastroViewModel
 @{
     ViewBag.Title = "Cadastro de Profissional";
 }
@@ -8,52 +8,63 @@
 
     @using (Html.BeginForm("CadastroProfissional", "Cadastro", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form" }))
     {
+        @Html.HiddenFor(model => model.TipoUsuario)
+        @Html.HiddenFor(model => model.Usuario.Nome)
+        @Html.HiddenFor(model => model.Usuario.Email)
+        @Html.HiddenFor(model => model.Usuario.Endereco)
+        @Html.HiddenFor(model => model.Usuario.Telefone)
+        @Html.HiddenFor(model => model.Usuario.Senha)
+
         <div class="form-group">
-            @Html.LabelFor(m => m.CPF, "CPF")
-            @Html.TextBoxFor(m => m.CPF, new { @class = "form-control", placeholder = "Digite seu CPF", required = "required" })
-            @Html.ValidationMessageFor(m => m.CPF, "", new { @class = "text-danger" })
+            @Html.LabelFor(m => m.Usuario.CPF, "CPF")
+            @Html.TextBoxFor(m => m.Usuario.CPF, new { @class = "form-control", placeholder = "Digite seu CPF", required = "required" })
+            @Html.ValidationMessageFor(m => m.Usuario.CPF, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.Genero, "Gênero")
-            @Html.DropDownListFor(m => m.Genero, new SelectList(new[] { "Feminino", "Masculino" }), new { @class = "form-control", id = "Genero" })
-            @Html.ValidationMessageFor(m => m.Genero, "", new { @class = "text-danger" })
+            @Html.LabelFor(m => m.Usuario.Genero, "Gênero")
+            @Html.DropDownListFor(m => m.Usuario.Genero, new SelectList(new[] { "Feminino", "Masculino" }), new { @class = "form-control", id = "Genero" })
+            @Html.ValidationMessageFor(m => m.Usuario.Genero, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
             @Html.Label("Foto com Documento")
             <label class="custom-file-upload">
-                <input type="file" name="FotoDocumento" accept="image/*" onchange="updateFileName(this, 'fotoDocumentoNome')" />
+                <input type="file" name="FotoDocumento" accept="image/*" required="required" onchange="updateFileName(this, 'fotoDocumentoNome')" />
                 Escolher arquivo
             </label>
             <small id="fotoDocumentoNome"></small>
+            <span class="text-danger" id="fotoDocumentoError"></span>
         </div>
 
         <div class="form-group">
             @Html.Label("Foto do Documento")
             <label class="custom-file-upload">
-                <input type="file" name="Documento" accept="image/*" onchange="updateFileName(this, 'documentoNome')" />
+                <input type="file" name="Documento" accept="image/*" required="required" onchange="updateFileName(this, 'documentoNome')" />
                 Escolher arquivo
             </label>
             <small id="documentoNome"></small>
+            <span class="text-danger" id="documentoError"></span>
         </div>
 
         <div class="form-group">
             @Html.Label("Certificado de Bons Antecedentes")
             <label class="custom-file-upload">
-                <input type="file" name="CertificadoBonsAntecedentes" accept="application/pdf" onchange="updateFileName(this, 'certificadoBonsAntecedentesNome')" />
+                <input type="file" name="CertificadoBonsAntecedentes" accept="application/pdf" required="required" onchange="updateFileName(this, 'certificadoBonsAntecedentesNome')" />
                 Escolher arquivo
             </label>
             <small id="certificadoBonsAntecedentesNome"></small>
+            <span class="text-danger" id="certificadoBonsAntecedentesError"></span>
         </div>
 
         <div id="dispensaExercito" class="form-group" style="display:none;">
             @Html.Label("Certificado de Dispensa do Exército")
             <label class="custom-file-upload">
-                <input type="file" name="CertificadoDispensa" accept="application/pdf" onchange="updateFileName(this, 'certificadoDispensaNome')" />
+                <input type="file" name="CertificadoDispensa" accept="application/pdf" required="required" onchange="updateFileName(this, 'certificadoDispensaNome')" />
                 Escolher arquivo
             </label>
             <small id="certificadoDispensaNome"></small>
+            <span class="text-danger" id="certificadoDispensaError"></span>
         </div>
 
         <div class="form-group">
@@ -89,11 +100,42 @@
 @section scripts {
     <script>
         $(document).ready(function () {
+            // Exibe o campo Certificado de Dispensa do Exército apenas para homens
             $('#Genero').change(function () {
                 if ($(this).val() === 'Masculino') {
                     $('#dispensaExercito').show();
+                    $('input[name="CertificadoDispensa"]').attr('required', 'required');  // Torna obrigatório
                 } else {
                     $('#dispensaExercito').hide();
+                    $('input[name="CertificadoDispensa"]').removeAttr('required');  // Remove a obrigatoriedade
+                }
+            });
+
+            // Adiciona validação de obrigatoriedade nos campos ao submeter
+            $('form').submit(function (e) {
+                var isValid = true;
+
+                // Verifica se os campos obrigatórios estão preenchidos
+                if ($('input[name="FotoDocumento"]').val() === '') {
+                    $('#fotoDocumentoError').text('Foto com Documento é obrigatório.');
+                    isValid = false;
+                }
+                if ($('input[name="Documento"]').val() === '') {
+                    $('#documentoError').text('Foto do Documento é obrigatório.');
+                    isValid = false;
+                }
+                if ($('input[name="CertificadoBonsAntecedentes"]').val() === '') {
+                    $('#certificadoBonsAntecedentesError').text('Certificado de Bons Antecedentes é obrigatório.');
+                    isValid = false;
+                }
+                if ($('#Genero').val() === 'Masculino' && $('input[name="CertificadoDispensa"]').val() === '') {
+                    $('#certificadoDispensaError').text('Certificado de Dispensa do Exército é obrigatório.');
+                    isValid = false;
+                }
+
+                // Previne o envio do formulário se houver erro
+                if (!isValid) {
+                    e.preventDefault();
                 }
             });
         });

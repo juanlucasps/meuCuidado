@@ -1,5 +1,6 @@
 ﻿using meuCuidado.Dominio.Models;
 using meuCuidado.Dominio.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,25 +40,12 @@ namespace meuCuidado.Controllers
                         Senha = pessoa.Usuario.Senha,
                         DataCadasto = DateTime.Now,
                         DataNascimento = DateTime.Now,
-                        NecessidadesEspeciais = false,
-                        Tutor = new Tutor
-                        {
-                            IdentificadorUnico = Guid.NewGuid(),
-                            Nome = pessoa.Usuario.Nome,
-                            Email = pessoa.Usuario.Email,
-                            CPF = pessoa.Usuario.CPF,
-                            Endereco = pessoa.Usuario.Endereco,
-                            Telefone = pessoa.Usuario.Telefone,
-                            Senha = pessoa.Usuario.Senha,
-                            DataCadasto = DateTime.Now,
-                            RelacaoComIdoso = TipoUsuario.Tutor.ToString(),
-                            IdadeDoIdoso = DateTime.Now,
-                            NecessidadesEspeciais = false,
-                        }
+                        NecessidadesEspeciais = false
                     };
 
-                    _context.Idosos.Add(idoso);
-                    _context.SaveChanges();
+                    TempData["Idoso"] = JsonConvert.SerializeObject(idoso);
+
+                    return RedirectToAction("CadastroTutorEMedicoDoIdoso");
                 }
                 else if (pessoa.TipoUsuario == TipoUsuario.Tutor)
                 {
@@ -81,71 +69,125 @@ namespace meuCuidado.Controllers
                     _context.SaveChanges();
                 }
                 else
-                {
-                    return RedirectToAction("CadastroProfissional");
-                }
+                    return CadastroProfissional(pessoa);
 
                 return RedirectToAction("Login", "Login");
             }
-
-            return View(pessoa);
+            else
+                return View(pessoa);
         }
 
-        // Tela de Cadastro do Profissional
-        public ActionResult CadastroProfissional()
+        public ActionResult CadastroTutorEMedicoDoIdoso()
         {
-            return View();
+            var idosoJson = TempData["Idoso"] as string;
+            if (string.IsNullOrEmpty(idosoJson))
+            {
+                // Se não encontrar os dados, redireciona de volta para a página anterior
+                return RedirectToAction("Cadastro");
+            }
+
+            // Desserializa os dados do idoso
+            var idoso = JsonConvert.DeserializeObject<Idoso>(idosoJson);
+
+            // Cria um ViewModel para o cadastro de Tutor e Médico
+            var viewModel = new CadastroTutorEMedicoDoIdosoViewModel
+            {
+                Idoso = idoso,
+                Tutor = new Tutor(),
+                Medicos = new List<Medico>() // Inicializa a lista de médicos
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
-        //public ActionResult CadastroProfissional(Usuario model, HttpPostedFileBase FotoDocumento, HttpPostedFileBase Documento, HttpPostedFileBase CertificadoBonsAntecedentes, HttpPostedFileBase CertificadoDispensa)
-        public ActionResult CadastroProfissional(CadastroProfissionalViewModel cadastroProfissionalViewModel, HttpPostedFileBase FotoDocumento, HttpPostedFileBase Documento, HttpPostedFileBase CertificadoBonsAntecedentes, HttpPostedFileBase CertificadoDispensa)
+        public ActionResult SalvarCadastroTutorEMedico(CadastroTutorEMedicoDoIdosoViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                // Aqui você pode salvar as informações do profissional
-                // Verifique se cada arquivo foi enviado e faça o upload
-                if (FotoDocumento != null && FotoDocumento.ContentLength > 0)
+                // Atualiza o Tutor do Idoso
+                if (viewModel.Idoso != null)
                 {
-                    var caminhoFotoDocumento = Server.MapPath("~/DocumentosAnalise/FotosDocumento/");
-                    if (!Directory.Exists(caminhoFotoDocumento))
-                        Directory.CreateDirectory(caminhoFotoDocumento);
+                    viewModel.Idoso.Tutor.Email = viewModel.Tutor.Email; // O e-mail passa a ser igual ao do tutor se for diferente;
 
-                    var nomeArquivoFoto = Guid.NewGuid() + Path.GetExtension(FotoDocumento.FileName);
-                    FotoDocumento.SaveAs(caminhoFotoDocumento + nomeArquivoFoto);
+                    // Adiciona o médico (caso tenha sido inserido)
+                    foreach (var medico in viewModel.Medicos)
+                    {
+                        _context.Medicos.Add(medico);
+                    }
+
+                    _context.SaveChanges();
+
+                    return RedirectToAction("Sucesso", "Cadastro"); // Redireciona para uma tela de sucesso
+                }
+            }
+
+            return View(viewModel); // Retorna a tela de cadastro com erros, caso exista algum
+        }
+
+
+
+        // Tela de Cadastro do Profissional
+        public ActionResult CadastroProfissional(CadastroViewModel pessoa)
+        {
+            return View("CadastroProfissional", pessoa);
+        }
+
+        [HttpPost]
+        public ActionResult CadastroProfissional(CadastroViewModel cadastroProfissionalViewModel, HttpPostedFileBase FotoDocumento, HttpPostedFileBase Documento, HttpPostedFileBase CertificadoBonsAntecedentes, HttpPostedFileBase CertificadoDispensa)
+        {
+            if (ModelState.IsValid)
+            {
+                int? idUsuario = null;
+
+                if (cadastroProfissionalViewModel.TipoUsuario == TipoUsuario.Cuidador)
+                {
+                    // MODEL PARA CADASTRO DE IDOSO
+                    CuidadorDeIdoso cuidadorDeIdoso = new CuidadorDeIdoso
+                    {
+                        IdentificadorUnico = Guid.NewGuid(),
+                        Nome = cadastroProfissionalViewModel.Usuario.Nome,
+                        Email = cadastroProfissionalViewModel.Usuario.Email,
+                        CPF = cadastroProfissionalViewModel.Usuario.CPF,
+                        Endereco = cadastroProfissionalViewModel.Usuario.Endereco,
+                        Telefone = cadastroProfissionalViewModel.Usuario.Telefone,
+                        Senha = cadastroProfissionalViewModel.Usuario.Senha,
+                        DataCadasto = DateTime.Now
+                    };
+
+                    _context.CuidadoresDeIdoso.Add(cuidadorDeIdoso);
+                    _context.SaveChanges();
+                    idUsuario = cuidadorDeIdoso.Id;
+                }
+                else if (cadastroProfissionalViewModel.TipoUsuario == TipoUsuario.Fisioterapeuta)
+                {
+                    // MODEL PARA CADASTRO DE TUTOR
+                    Fisioterapeuta fisioterapeuta = new Fisioterapeuta
+                    {
+                        IdentificadorUnico = new Guid(),
+                        Nome = cadastroProfissionalViewModel.Usuario.Nome,
+                        Email = cadastroProfissionalViewModel.Usuario.Email,
+                        CPF = cadastroProfissionalViewModel.Usuario.CPF,
+                        Endereco = cadastroProfissionalViewModel.Usuario.Endereco,
+                        Telefone = cadastroProfissionalViewModel.Usuario.Telefone,
+                        Senha = cadastroProfissionalViewModel.Usuario.Senha,
+                        DataCadasto = DateTime.Now
+                    };
+
+                    _context.Fisioterapeutas.Add(fisioterapeuta);
+                    _context.SaveChanges();
+                    idUsuario = fisioterapeuta.Id;
                 }
 
-                if (Documento != null && Documento.ContentLength > 0)
+                if (idUsuario != null && idUsuario != 0)
                 {
-                    var caminhoDocumento = Server.MapPath("~/DocumentosAnalise/Documentos/");
-                    if (!Directory.Exists(caminhoDocumento))
-                        Directory.CreateDirectory(caminhoDocumento);
-
-                    var nomeArquivoDocumento = Guid.NewGuid() + Path.GetExtension(Documento.FileName);
-                    Documento.SaveAs(caminhoDocumento + nomeArquivoDocumento);
+                    SalvarDocumento(FotoDocumento, TipoDocumento.FotoDocumento, cadastroProfissionalViewModel.Usuario.Id);
+                    SalvarDocumento(Documento, TipoDocumento.Documento, cadastroProfissionalViewModel.Usuario.Id);
+                    SalvarDocumento(CertificadoBonsAntecedentes, TipoDocumento.CertificadoBonsAntecedentes, cadastroProfissionalViewModel.Usuario.Id);
+                    SalvarDocumento(CertificadoDispensa, TipoDocumento.CertificadoDispensa, cadastroProfissionalViewModel.Usuario.Id);
                 }
 
-                if (CertificadoBonsAntecedentes != null && CertificadoBonsAntecedentes.ContentLength > 0)
-                {
-                    var caminhoCertificadoBonsAntecedentes = Server.MapPath("~/DocumentosAnalise/CertificadosBonsAntecedentes/");
-                    if (!Directory.Exists(caminhoCertificadoBonsAntecedentes))
-                        Directory.CreateDirectory(caminhoCertificadoBonsAntecedentes);
-
-                    var nomeArquivoCertificado = Guid.NewGuid() + Path.GetExtension(CertificadoBonsAntecedentes.FileName);
-                    CertificadoBonsAntecedentes.SaveAs(caminhoCertificadoBonsAntecedentes + nomeArquivoCertificado);
-                }
-
-                if (CertificadoDispensa != null && CertificadoDispensa.ContentLength > 0)
-                {
-                    var caminhoCertificadoDispensa = Server.MapPath("~/DocumentosAnalise/CertificadosDispensa/");
-                    if (!Directory.Exists(caminhoCertificadoDispensa))
-                        Directory.CreateDirectory(caminhoCertificadoDispensa);
-
-                    var nomeArquivoDispensa = Guid.NewGuid() + Path.GetExtension(CertificadoDispensa.FileName);
-                    CertificadoDispensa.SaveAs(caminhoCertificadoDispensa + nomeArquivoDispensa);
-                }
-
-                return RedirectToAction("Dashboard", "Dashboard");
+                return RedirectToAction("Login", "Login", cadastroProfissionalViewModel.Usuario);
             }
 
             // Pega os erros da model
@@ -155,6 +197,64 @@ namespace meuCuidado.Controllers
             ViewBag.Errors = errors;
 
             return View(cadastroProfissionalViewModel);
+        }
+
+        
+        private void SalvarDocumento(HttpPostedFileBase arquivo, TipoDocumento tipoDocumento, int usuarioId)
+        {
+            if (arquivo != null && arquivo.ContentLength > 0)
+            {
+                // Verificar a extensão do arquivo
+                var extensao = Path.GetExtension(arquivo.FileName).ToLower();
+                TipoExtensaoDocumento tipoExtensao;
+
+                switch (extensao)
+                {
+                    case ".jpg":
+                    case ".jpeg":
+                        tipoExtensao = TipoExtensaoDocumento.JPG;
+                        break;
+                    case ".png":
+                        tipoExtensao = TipoExtensaoDocumento.PNG;
+                        break;
+                    case ".pdf":
+                        tipoExtensao = TipoExtensaoDocumento.PDF;
+                        break;
+                    case ".docx":
+                        tipoExtensao = TipoExtensaoDocumento.DOCX;
+                        break;
+                    case ".xlsx":
+                        tipoExtensao = TipoExtensaoDocumento.XLSX;
+                        break;
+                    default:
+                        throw new InvalidOperationException("Tipo de arquivo não suportado.");
+                }
+
+                // Caminho onde o arquivo será salvo
+                var caminho = Server.MapPath("~/DocumentosAnalise/");
+
+                if (!Directory.Exists(caminho))
+                    Directory.CreateDirectory(caminho);
+
+                var nomeArquivo = Guid.NewGuid() + extensao;
+                var caminhoCompleto = Path.Combine(caminho, nomeArquivo);
+
+                // Salvar o arquivo no servidor
+                arquivo.SaveAs(caminhoCompleto);
+
+                // Criar a instância do documento e associá-lo ao usuário
+                var documento = new Documento
+                {
+                    Id = Guid.NewGuid(),
+                    TipoDocumento = tipoDocumento,
+                    Extensao = tipoExtensao,
+                    Caminho = caminhoCompleto,
+                    UsuarioId = usuarioId
+                };
+
+                //_context.Documentos.Add(documento);
+                _context.SaveChanges();
+            }
         }
 
         private List<string> GetModelErrors()

@@ -1,11 +1,10 @@
 ﻿@model IList<meuCuidado.Dominio.Models.Lembrete>
 @{
-    ViewBag.Title = "Lembrete";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Lembretes";
+    Layout = null;
 }
 
 <div class="container">
-    <h2>@ViewBag.Title</h2>
     <div id="calendar">
         <div class="calendar-header">
             <button id="prevMonth" class="btn btn-light">&lt;</button>
@@ -19,7 +18,6 @@
         @Html.Partial("ListaLembretes", Model)
     </div>
 
-
     <form id="addReminderForm">
         <h2>Adicionar Lembrete</h2>
         <div class="form-group">
@@ -30,6 +28,27 @@
             <label for="dataHora">Hora do Lembrete</label>
             <input type="time" class="form-control" id="dataHora" required />
         </div>
+        <div class="form-group">
+            <label for="MedicamentoId">Medicamento (Opcional)</label>
+            <select class="form-control" id="MedicamentoId" name="MedicamentoId">
+                <option value="">Nenhum</option>
+                @foreach (var medicamento in ViewBag.Medicamentos)
+                {
+                    <option value="@medicamento.Id">@medicamento.Nome</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="DosagemId">Dosagem (Opcional)</label>
+            <select class="form-control" id="DosagemId" name="DosagemId">
+                <option value="">Nenhum</option>
+                @foreach (var medicamento in ViewBag.Medicamentos)
+                {
+                    <option value="@medicamento.Id">@medicamento.Dosagem</option>
+                }
+            </select>
+        </div>
+        <button type="button" class="btn btn-link" onclick="window.location.href='@Url.Action("AdicionarMedicamento", "Medicamento")'">Adicionar Novo Medicamento</button>
         <button type="submit" class="btn btn-primary">Adicionar Lembrete</button>
     </form>
 </div>
@@ -69,7 +88,7 @@
     }
 
         .day.selected {
-            background-color: #a8dadc; /* Azul pastel */
+            background-color: #a8dadc;
         }
 
         .day:hover {
@@ -84,179 +103,135 @@
         .reminder-list .list-group-item {
             background-color: #fefefe;
         }
+
+    .reminder-container {
+        padding: 20px;
+        max-width: 800px;
+        margin: 20px auto;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .reminder {
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
 </style>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    let currentMonth = new Date();
-    const monthYear = document.getElementById('monthYear');
-    const calendarGrid = document.getElementById('calendarGrid');
-    const reminderList = document.getElementById('reminderList');
-    let selectedDate = '';
-    function renderCalendar() {
-        monthYear.textContent = currentMonth.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
-        calendarGrid.innerHTML = '';
+    jQuery(document).ready(function () {
+        let currentMonth = new Date();
+        const monthYear = document.getElementById('monthYear');
+        const calendarGrid = document.getElementById('calendarGrid');
+        let selectedDate = '';
 
-        const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
-        const lastDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+        function renderCalendar() {
+            monthYear.textContent = currentMonth.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+            calendarGrid.innerHTML = '';
 
-        // Adiciona espaços vazios para os dias antes do primeiro dia do mês
-        for (let i = 0; i < firstDay.getDay(); i++) {
-            const emptyDiv = document.createElement('div');
-            calendarGrid.appendChild(emptyDiv);
-        }
+            const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+            const lastDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
 
-        // Adiciona os dias do mês
-        for (let day = 1; day <= lastDay.getDate(); day++) {
-            const dayDiv = document.createElement('div');
-            dayDiv.textContent = day;
-            dayDiv.className = 'day';
-            dayDiv.dataset.date = `${currentMonth.getFullYear()}-${(currentMonth.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-
-            // Seleciona o dia atual
-            const today = new Date();
-            if (today.getFullYear() === currentMonth.getFullYear() &&
-                today.getMonth() === currentMonth.getMonth() &&
-                today.getDate() === day) {
-                dayDiv.classList.add('selected'); // Aplica a classe 'selected' para o dia atual
-                selectedDate = dayDiv.dataset.date; // Atualiza a variável selectedDate
-                showReminders(selectedDate); // Chama a função para mostrar lembretes do dia atual
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                const emptyDiv = document.createElement('div');
+                calendarGrid.appendChild(emptyDiv);
             }
 
-            dayDiv.addEventListener('click', function () {
-                // Remove a classe 'selected' de todos os dias
-                const allDays = document.querySelectorAll('.day');
-                allDays.forEach(d => d.classList.remove('selected'));
-                selectedDate = dayDiv.dataset.date; // Atualiza a variável selectedDate
-                dayDiv.classList.add('selected'); // Alterna a classe 'selected'
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.textContent = day;
+                dayDiv.className = 'day';
+                dayDiv.dataset.date = `${currentMonth.getFullYear()}-${(currentMonth.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
-                // Chama a função para mostrar os lembretes
-                showReminders(selectedDate);
-            });
-
-            calendarGrid.appendChild(dayDiv);
-        }
-    }
-
-    document.getElementById('prevMonth').addEventListener('click', function () {
-        currentMonth.setMonth(currentMonth.getMonth() - 1);
-        renderCalendar();
-    });
-
-    document.getElementById('nextMonth').addEventListener('click', function () {
-        currentMonth.setMonth(currentMonth.getMonth() + 1);
-        renderCalendar();
-    });
-
-    // Adicionar lembrete
-    document.getElementById('addReminderForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        const descricao = document.getElementById('descricao').value.trim(); // Remove espaços em branco
-        const dataHora = new Date(selectedDate + 'T' + document.getElementById('dataHora').value);
-
-        // Validação simples
-        if (!descricao) {
-            alert('A descrição do lembrete é obrigatória.');
-            return;
-        }
-
-        fetch('/Lembrete/Create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ Descricao: descricao, DataHora: dataHora, Repete: false }) // Ajuste conforme necessário
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Lembrete adicionado com sucesso!');
-                    renderCalendar(); // Re-renderiza o calendário
-                    document.getElementById('addReminderForm').reset(); // Limpa o formulário
-                } else {
-                    // Exibe a mensagem na tela
-                    const messageDiv = document.createElement('div');
-                    messageDiv.className = 'alert alert-danger';
-                    messageDiv.textContent = 'Erro ao adicionar lembrete.';
-                    document.body.appendChild(messageDiv);
-                    setTimeout(() => messageDiv.remove(), 3000); // Remove a mensagem após 3 segundos
+                const today = new Date();
+                if (today.getFullYear() === currentMonth.getFullYear() &&
+                    today.getMonth() === currentMonth.getMonth() &&
+                    today.getDate() === day) {
+                    dayDiv.classList.add('selected');
+                    selectedDate = dayDiv.dataset.date;
+                    showReminders(selectedDate);
                 }
-            });
-    });
 
-    function showReminders(date) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', `/Lembrete/GetReminders?date=${date}`, true);
-        xhr.onload = function () {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                // Atualiza o conteúdo da partial view
-                const listaLembretesContainer = document.getElementById('ListaLembretesContainer');
-                listaLembretesContainer.innerHTML = xhr.responseText;
-            } else {
-                console.error('Erro ao buscar lembretes:', xhr.statusText);
-                const listaLembretesContainer = document.getElementById('ListaLembretesContainer');
-                listaLembretesContainer.innerHTML = "<li class='list-group-item'>Erro ao buscar lembretes.</li>";
+                dayDiv.addEventListener('click', function () {
+                    const allDays = document.querySelectorAll('.day');
+                    allDays.forEach(d => d.classList.remove('selected'));
+                    selectedDate = dayDiv.dataset.date;
+                    dayDiv.classList.add('selected');
+                    showReminders(selectedDate);
+                });
+
+                calendarGrid.appendChild(dayDiv);
             }
-        };
-        xhr.onerror = function () {
-            console.error('Erro ao realizar a requisição.');
-        };
-        xhr.send();
-    }
-
-    // Adicionar lembrete
-    document.getElementById('addReminderForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        const descricao = document.getElementById('descricao').value.trim(); // Remove espaços em branco
-        const dataHora = new Date(selectedDate + 'T' + document.getElementById('dataHora').value);
-
-        // Validação simples
-        if (!descricao) {
-            alert('A descrição do lembrete é obrigatória.');
-            return;
         }
 
-        fetch('/Lembrete/Create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ Descricao: descricao, DataHora: dataHora, Repete: false }) // Ajuste conforme necessário
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Lembrete adicionado com sucesso!');
-                    renderCalendar(); // Re-renderiza o calendário
-                    document.getElementById('addReminderForm').reset(); // Limpa o formulário
+        document.getElementById('prevMonth').addEventListener('click', function () {
+            currentMonth.setMonth(currentMonth.getMonth() - 1);
+            renderCalendar();
+        });
 
-                    // Atualiza os lembretes para a data selecionada
-                    fetch(`/Lembrete/GetReminders?date=${selectedDate}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            reminderList.innerHTML = ""; // Limpa a lista de lembretes
-                            noRemindersMessage.style.display = "none"; // Oculta a mensagem
+        document.getElementById('nextMonth').addEventListener('click', function () {
+            currentMonth.setMonth(currentMonth.getMonth() + 1);
+            renderCalendar();
+        });
 
-                            if (data.success) {
-                                if (data.length > 0) {
-                                    data.forEach(reminder => {
-                                        const li = document.createElement('li');
-                                        li.className = 'list-group-item';
-                                        li.textContent = `${reminder.Descricao} - ${new Date(reminder.DataHora).toLocaleString('pt-BR')}`;
-                                        reminderList.appendChild(li);
-                                    });
-                                } else {
-                                    noRemindersMessage.style.display = "block"; // Mostra a mensagem
-                                }
-                            }
-                        });
+        document.getElementById('addReminderForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const descricao = document.getElementById('descricao').value.trim();
+            const dataHora = new Date(selectedDate + 'T' + document.getElementById('dataHora').value);
+            const medicamentoId = document.getElementById('MedicamentoId').value;
+            const dosagemId = document.getElementById('DosagemId').value;
+
+            if (!descricao) {
+                alert('A descrição do lembrete é obrigatória.');
+                return;
+            }
+
+            fetch('/Lembrete/Create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    Descricao: descricao,
+                    DataHora: dataHora,
+                    Repete: false,
+                    MedicamentoId: medicamentoId || null,
+                    DosagemId: dosagemId || null
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Lembrete adicionado com sucesso!');
+                        renderCalendar();
+                        document.getElementById('addReminderForm').reset();
+                    } else {
+                        alert('Erro ao adicionar lembrete.');
+                    }
+                });
+        });
+
+        function showReminders(date) {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `/Lembrete/GetReminders?date=${date}`, true);
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    const listaLembretesContainer = document.getElementById('ListaLembretesContainer');
+                    listaLembretesContainer.innerHTML = xhr.responseText;
                 } else {
-                    alert('Erro ao adicionar lembrete.');
+                    console.error('Erro ao buscar lembretes:', xhr.statusText);
+                    document.getElementById('ListaLembretesContainer').innerHTML = "<li class='list-group-item'>Erro ao buscar lembretes.</li>";
                 }
-            });
-    });
+            };
+            xhr.onerror = function () {
+                console.error('Erro ao realizar a requisição.');
+            };
+            xhr.send();
+        }
 
-    // Renderiza o calendário na primeira carga
-    renderCalendar();
+        renderCalendar();
+    });
 </script>

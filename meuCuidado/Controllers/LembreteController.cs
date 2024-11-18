@@ -18,12 +18,14 @@ namespace meuCuidado.Controllers
 
         public ActionResult Lembrete()
         {
+            var medicamentos = _context.Medicamentos.ToList();
+            ViewBag.Medicamentos = medicamentos; // Envia lista de medicamentos para a view
             var lembretes = new List<Lembrete>();
             return View(lembretes);
         }
 
         [HttpPost]
-        public JsonResult Create(Lembrete lembrete)
+        public JsonResult Create(Lembrete lembrete) // TODO: Pegar a Dosagem do Medicamento
         {
             if (ModelState.IsValid)
             {
@@ -31,16 +33,16 @@ namespace meuCuidado.Controllers
                 {
                     lembrete.IdentificadorUnico = Guid.NewGuid();
                     lembrete.RelacionamentoIdosoProfissional = new RelacionamentoIdosoProfissional();
-                    lembrete.RelacionamentoIdosoProfissionalId = 0;
-                    lembrete.Repete = false;
+                    lembrete.RelacionamentoIdosoProfissionalId = 1; // Definir de acordo com a lógica do projeto
+
                     _context.Lembretes.Add(lembrete);
                     _context.SaveChanges();
+
                     return Json(new { success = true });
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    // Log the exception (ex) as needed
-                    return Json(new { success = false, message = "Erro ao criar lembrete." });
+                    return Json(new { success = false });
                 }
             }
             return Json(new { success = false });
@@ -55,46 +57,29 @@ namespace meuCuidado.Controllers
             }
 
             var lembretes = _context.Lembretes
-                .AsNoTracking()
-                .Where(l => DbFunctions.TruncateTime(l.DataHora) == selectedDate.Date)
-                .ToList();
+                        .Where(l => DbFunctions.TruncateTime(l.DataHora) == selectedDate.Date).Include(l => l.Medicamento) // Incluir o medicamento, se houver
+                        .ToList();
 
             return PartialView("ListaLembretes", lembretes);
         }
 
-        public ActionResult Edit(int id)
+        public ActionResult Excluir(int id)
         {
             var lembrete = _context.Lembretes.Find(id);
+
+            // Verifica se o lembrete existe
             if (lembrete == null)
             {
-                return HttpNotFound();
+                return HttpNotFound(); // Retorna erro 404 se não encontrar
             }
-            ViewBag.MedicamentoId = new SelectList(_context.Medicamentos, "Id", "Nome", lembrete.MedicamentoId);
-            return View(lembrete);
-        }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(Lembrete lembrete)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Entry(lembrete).State = EntityState.Modified;
-                _context.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.MedicamentoId = new SelectList(_context.Medicamentos, "Id", "Nome", lembrete.MedicamentoId);
-            return View(lembrete);
-        }
+            // Remove o lembrete
+            _context.Lembretes.Remove(lembrete);
 
-        public ActionResult Delete(int id)
-        {
-            var lembrete = _context.Lembretes.Find(id);
-            if (lembrete == null)
-            {
-                return HttpNotFound();
-            }
-            return View(lembrete);
+            // Salva as alterações no banco
+            _context.SaveChanges();
+
+            return RedirectToAction("Dashboard", "Dashboard");
         }
 
         [HttpPost, ActionName("Delete")]

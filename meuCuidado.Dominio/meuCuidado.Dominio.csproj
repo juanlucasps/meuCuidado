@@ -74,9 +74,12 @@
   <ItemGroup>
     <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Models\Ajuda.cs" />
+    <Compile Include="Models\Curriculo.cs" />
+    <Compile Include="Models\Documento.cs" />
     <Compile Include="ViewModels\AutenticacaoViewModel.cs" />
     <Compile Include="Models\Avaliacao.cs" />
     <Compile Include="ViewModels\CadastroProfissionalViewModel .cs" />
+    <Compile Include="ViewModels\CadastroTutorEMedicoDoIdosoViewModel.cs" />
     <Compile Include="ViewModels\CadastroViewModel.cs" />
     <Compile Include="Models\CuidadorDeIdoso.cs" />
     <Compile Include="Models\Fisioterapeuta.cs" />
@@ -90,6 +93,8 @@
     <Compile Include="Models\Tutor.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\ConfiguracoesViewModel.cs" />
+    <Compile Include="ViewModels\PerfilDetalhadoViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -17,6 +17,9 @@ namespace meuCuidado.Dominio.Models
         public DbSet<Fisioterapeuta> Fisioterapeutas { get; set; }
         public DbSet<Idoso> Idosos { get; set; }
         public DbSet<Tutor> Tutores { get; set; }
+        public DbSet<Documento> Documentos { get; set; }
+        public DbSet<Curriculo> Curriculos { get; set; }
+        public DbSet<Medico> Medicos { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -89,8 +92,14 @@ namespace meuCuidado.Dominio.Models
             // Configurações para Tutor
             modelBuilder.Entity<Tutor>()
                 .HasKey(t => t.Id); // Define a chave primária
+            
+            // Configurações para Documento
+            modelBuilder.Entity<Documento>()
+                .HasKey(t => t.Id); // Define a chave primária 
 
-            // Aqui você pode adicionar mais configurações para as outras entidades, se necessário.
+            // Configurações para Curriculo
+            modelBuilder.Entity<Curriculo>()
+                .HasKey(t => t.Id); // Define a chave primária
         }
     }
 }

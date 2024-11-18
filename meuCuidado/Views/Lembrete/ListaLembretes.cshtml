@@ -2,62 +2,74 @@
 
 @if (Model != null && Model.Count() != 0)
 {
-
     <table class="table">
-        <tr>
-            @*<th>
-                @Html.DisplayNameFor(model => model.RelacionamentoIdosoProfissional.Id)
-            </th>*@
-            @*<th>
-                @Html.DisplayNameFor(model => model.IdentificadorUnico)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MedicamentoId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descricao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataHora)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Repete)
-            </th>*@
-            <th></th>
-        </tr>
-
-        @foreach (var item in Model)
-        {
+        <thead>
             <tr>
-                @*<td>
-                    @Html.DisplayFor(modelItem => item.RelacionamentoIdosoProfissional.Id)
-                </td>*@
-                <td>
-                    @Html.DisplayFor(modelItem => item.IdentificadorUnico)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MedicamentoId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Descricao)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DataHora)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Repete)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                </td>
+                <th>Descrição</th>
+                <th>Data e Hora</th>
+                <th>Medicamento</th>
+                <th>Ações</th>
             </tr>
-        }
-
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Descricao)</td>
+                    <td>@Html.DisplayFor(modelItem => item.DataHora)</td>
+                    <td>
+                        @if (item.Medicamento != null) // Verifique se o medicamento está incluído
+                        {
+                            <button type="button" class="btn btn-info" data-toggle="tooltip" title="@item.Medicamento.Nome - Dosagem: @item.Medicamento.Dosagem">
+                                Medicamento
+                            </button>
+                        }
+                        else
+                        {
+                            <span>Sem Medicamento</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("Editar", "Editar", new { id = item.Id }) |
+                        @Html.ActionLink("Excluir", "Excluir", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+        </tbody>
     </table>
 }
 else
 {
     <p>Não existem lembretes para exibir na data selecionada.</p>
 }
+
+<!-- Estilos adicionais -->
+<style>
+    .table th, .table td {
+        text-align: center;
+    }
+
+    .btn-info {
+        font-size: 14px;
+    }
+
+        .btn-info:hover {
+            cursor: pointer;
+        }
+
+    .btn-link {
+        color: #007bff;
+        font-size: 14px;
+    }
+
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+</style>
+
+<!-- Script para tooltip -->
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
