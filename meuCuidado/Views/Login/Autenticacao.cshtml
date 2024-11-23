@@ -47,9 +47,10 @@
     }
 
     h2 {
-        font-size: 24px;
+        font-size: 22px;
         margin-bottom: 20px;
-        color: #007BFF;
+        color: #0056b3;
+        font-weight: bold;
     }
 
     .auth-content {
@@ -59,81 +60,59 @@
     .code-inputs {
         display: flex;
         justify-content: center;
+        gap: 10px;
     }
 
     .code-box {
         width: 50px;
         height: 50px;
-        margin: 0 5px;
-        font-size: 24px;
+        font-size: 20px;
         text-align: center;
         border: 1px solid #ddd;
         border-radius: 4px;
-        transition: border-color 0.3s;
+        transition: border-color 0.3s, box-shadow 0.3s;
     }
 
-        .code-box:focus {
-            border-color: #007BFF;
-            outline: none;
-        }
+    .code-box:focus {
+        border-color: #0056b3;
+        box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
+        outline: none;
+    }
 
     .auth-footer {
         margin-top: 20px;
     }
 
-    .confirm-btn {
-        background-color: #007BFF;
-        color: #fff;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-        .confirm-btn:hover {
-            background-color: #0056b3;
-        }
-
-    /* Responsividade */
-    .auth-container {
-        width: 100%;
-        max-width: 400px;
-        padding: 10px;
-    }
-
-    .code-box {
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-    }
-
-     /* Estilo adicional para o botão de Reenviar Código */
+    .confirm-btn,
     .resend-btn {
-        background-color: #007BFF;
+        display: inline-block;
+        background-color: #007bff;
         color: #fff;
         border: none;
         padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: not-allowed;
-        margin-top: 10px;
-        transition: background-color 0.3s;
-        position: relative;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
     }
 
-    .resend-btn.enabled {
-        cursor: pointer;
+    .confirm-btn:hover,
+    .resend-btn:hover {
         background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    .resend-btn:disabled {
+        background-color: #aaa;
+        cursor: not-allowed;
     }
 
     .spinner {
         display: inline-block;
-        width: 20px;
-        height: 20px;
+        width: 16px;
+        height: 16px;
         border: 2px solid #fff;
-        border-top: 2px solid #007BFF;
+        border-top: 2px solid #0056b3;
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin-right: 8px;
@@ -143,17 +122,41 @@
         display: none;
     }
 
-    @*@keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }*@
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .auth-container {
+            margin: 20px auto;
+            padding: 15px;
+        }
+
+        .code-box {
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+        }
+
+        .confirm-btn,
+        .resend-btn {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+    }
 </style>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     jQuery(document).ready(function ($) {
-        toastr.success("Código de autenticação enviado com sucesso!");
+        toastr.success("O Código de autenticação foi enviado para o e-mail informado.");
         // Foco no primeiro campo do código
         //$('#Codigo1').focus();
 
@@ -188,11 +191,12 @@
                         // Redireciona para o URL do dashboard
                         window.location.href = response.redirectUrl;
                     } else {
-                        alert("Código inválido, tente novamente.");
+                        toastr.error("Código inválido, tente novamente.");
                     }
                 },
                 error: function () {
-                    alert("Erro para validar o código. Tente novamente"); // Tratamento de erro
+                    toastr.error("Erro ao tentar validar o código. Tente novamente.");
+
                 }
             });
         });
@@ -222,7 +226,7 @@
                     type: 'POST',
                     data: { email: $('#email').val() },
                     success: function (response) {
-                        alert("Código reenviado com sucesso.");
+
                     },
                     error: function () {
                         alert("Erro ao reenviar o código. Tente novamente.");

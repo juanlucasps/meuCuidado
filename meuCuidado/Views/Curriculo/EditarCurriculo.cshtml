@@ -7,23 +7,29 @@
             <p><strong>Cuidadora de idosos há:</strong> @Model.AnosExperiencia anos</p>
             <p><strong>Escolaridade:</strong> @Model.Escolaridade</p>
 
-            <!-- Cursos -->
-            <p><strong>Cursos:</strong></p>
-            <ul>
-                @foreach (var curso in Model.Cursos)
-                {
-                    <li>@curso</li>
-                }
-            </ul>
+            @*Cursos*@
+            @if(Model.Cursos != null && Model.Cursos.Count() > 0)
+            {
+                <p><strong>Cursos:</strong></p>
+                <ul>
+                    @foreach (var curso in Model.Cursos)
+                    {
+                        <li>@curso</li>
+                    }
+                </ul>
+            }
 
             <!-- Experiências -->
-            <p><strong>Experiência:</strong></p>
-            <ul>
-                @foreach (var experiencia in Model.Experiencias)
-                {
-                    <li>@experiencia</li>
-                }
-            </ul>
+            @if (Model.Experiencias != null && Model.Experiencias.Count() > 0)
+            {
+                <p><strong>Experiência:</strong></p>
+                <ul>
+                    @foreach (var experiencia in Model.Experiencias)
+                    {
+                        <li>@experiencia</li>
+                    }
+                </ul>
+            }
 
             <!-- Redes Sociais -->
             <p><strong>Redes Sociais:</strong></p>
@@ -49,4 +55,31 @@
             </div>
         </div>
     </div>
+    <div class="mt-4 text-center">
+        <a href="@Url.Action("Configuracoes", "Configuracoes")" class="btn btn-outline-primary btn-lg">
+            <i class="fa fa-arrow-left"></i> Voltar
+        </a>
+    </div>
 </div>
+
+<!-- Estilo personalizado para o botão -->
+<style>
+    .btn-outline-primary {
+        border: 2px solid #007BFF;
+        color: #007BFF;
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #007BFF;
+        color: white;
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+    }
+
+    .btn-lg i {
+        margin-right: 8px;
+    }
+</style>

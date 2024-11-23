@@ -1,12 +1,10 @@
-﻿using meuCuidado.Dominio.Models;
-using meuCuidado.Dominio.ViewModels;
+﻿using meuCuidado.Dominio.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Web;
-using System.Web.Helpers;
 using System.Web.Mvc;
 using static meuCuidado.Dominio.Extensions.EnumExtension;
 
@@ -28,47 +26,54 @@ namespace meuCuidado.Controllers
         [HttpPost]
         public ActionResult Login(string email, string senha, string returnUrl)
         {
-            var cuidadorDeIdoso = _context.CuidadoresDeIdoso.FirstOrDefault(p => p.Email == email && p.Senha == senha);
-            var fisioterapeuta = _context.Fisioterapeutas.FirstOrDefault(p => p.Email == email && p.Senha == senha);
-            var idoso = _context.Idosos.FirstOrDefault(p => p.Email == email && p.Senha == senha);
-            var tutor = _context.Tutores.FirstOrDefault(p => p.Email == email && p.Senha == senha);
-
-            if (cuidadorDeIdoso != null || fisioterapeuta != null || idoso != null || tutor != null)
+            try
             {
-                var claims = new[] { new Claim(ClaimTypes.Name, email) };
-                var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
+                var cuidadorDeIdoso = _context.CuidadoresDeIdoso.FirstOrDefault(p => p.Email == email && p.Senha == senha);
+                var fisioterapeuta = _context.Fisioterapeutas.FirstOrDefault(p => p.Email == email && p.Senha == senha);
+                var idoso = _context.Idosos.FirstOrDefault(p => p.Email == email && p.Senha == senha);
+                var tutor = _context.Tutores.FirstOrDefault(p => p.Email == email && p.Senha == senha);
 
-                var authManager = HttpContext.GetOwinContext().Authentication;
-                authManager.SignIn(identity);
-
-                var codigoAutenticacao = _emailController.EnviarEmailAutenticacao(email);
-                Session["CodigoAutenticacao"] = codigoAutenticacao;
-                Session["SenhaCodificada"] = senha;
-
-                if (cuidadorDeIdoso != null )
-                    Session["TipoUsuario"] = GetEnumDescription(TipoUsuario.Cuidador);
-                else if (fisioterapeuta != null)
-                    Session["TipoUsuario"] = GetEnumDescription(TipoUsuario.Fisioterapeuta);
-                else if (tutor != null)
-                    Session["TipoUsuario"] = GetEnumDescription(TipoUsuario.Tutor);
-                else if (idoso != null)
-                    Session["TipoUsuario"] = GetEnumDescription(TipoUsuario.Idoso);
-
-                var autenticacaoViewModel = new AutenticacaoViewModel
+                if (cuidadorDeIdoso != null || fisioterapeuta != null || idoso != null || tutor != null)
                 {
-                    Codigo1 = string.Empty,
-                    Codigo2 = string.Empty,
-                    Codigo3 = string.Empty,
-                    Codigo4 = string.Empty,
-                    Codigo5 = string.Empty,
-                    Email = email
-                };
+                    var claims = new[] { new Claim(ClaimTypes.Name, email) };
+                    var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
 
-                return View("Autenticacao", autenticacaoViewModel);
+                    var authManager = HttpContext.GetOwinContext().Authentication;
+                    authManager.SignIn(identity);
+
+                    var codigoAutenticacao = _emailController.EnviarEmailAutenticacao(email);
+
+                    Session["CodigoAutenticacao"] = codigoAutenticacao;
+                    Session["SenhaCodificada"] = senha;
+
+                    if (cuidadorDeIdoso != null)
+                        Session["TipoUsuario"] = GetEnumDescription(TipoUsuario.Cuidador);
+                    else if (fisioterapeuta != null)
+                        Session["TipoUsuario"] = GetEnumDescription(TipoUsuario.Fisioterapeuta);
+                    else if (tutor != null)
+                        Session["TipoUsuario"] = GetEnumDescription(TipoUsuario.Tutor);
+                    else if (idoso != null)
+                        Session["TipoUsuario"] = GetEnumDescription(TipoUsuario.Idoso);
+
+                    var autenticacaoViewModel = new AutenticacaoViewModel
+                    {
+                        Codigo1 = string.Empty,
+                        Codigo2 = string.Empty,
+                        Codigo3 = string.Empty,
+                        Codigo4 = string.Empty,
+                        Codigo5 = string.Empty,
+                        Email = email
+                    };
+
+                    return View("Autenticacao", autenticacaoViewModel);
+                }
+
+                return Json(new { success = false, message = "Usuário ou senha inválidos." });
             }
-
-            ViewBag.ErrorMessage = "Usuário ou senha inválidos.";
-            return View();
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Erro interno: " + ex.Message });
+            }
         }
 
         public ActionResult Autenticacao(AutenticacaoViewModel autenticacaoViewModel)
@@ -139,6 +144,7 @@ namespace meuCuidado.Controllers
 
             if (codigoInserido == codigoCorreto)
             {
+                ViewBag.SuccessMessage = "Login realizado com sucesso.";
                 return Json(new { redirectUrl = Url.Action("Dashboard", "Dashboard") });
             }
             else

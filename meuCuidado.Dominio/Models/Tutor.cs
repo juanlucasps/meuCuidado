@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,10 +10,7 @@ namespace meuCuidado.Dominio.Models
         [Required]
         public string RelacaoComIdoso { get; set; }
 
-        [Required]
-        public DateTime IdadeDoIdoso { get; set; }
-
-        public virtual Idoso Idoso { get; set; }
+        public virtual IList<Idoso> Idosos { get; set; }
 
         public bool NecessidadesEspeciais { get; set; }
 

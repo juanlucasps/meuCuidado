@@ -7,13 +7,16 @@
 <div class="d-flex justify-content-around mb-4">
     <!-- Botão Perfil -->
     <a href="javascript:void(0);" id="perfilBtn" class="btn btn-primary btn-lg">
-        <i class="fa fa-user"></i> Perfil
+        <i class="fa fa-user"></i> Perfis
     </a>
 
-    <!-- Botão Lembretes -->
-    <a href="javascript:void(0);" id="lembreteBtn" class="btn btn-success btn-lg">
-        <i class="fa fa-bell"></i> Lembretes
-    </a>
+    <!-- Condição para exibir o botão de lembretes -->
+    @if (ViewBag.TipoUsuario == "Cuidador" || ViewBag.TipoUsuario == "Fisioterapeuta")
+    {
+        <a href="javascript:void(0);" id="lembreteBtn" class="btn btn-success btn-lg">
+            <i class="fa fa-bell"></i> Lembretes
+        </a>
+    }
 </div>
 
 <!-- Div para exibir as views completas -->

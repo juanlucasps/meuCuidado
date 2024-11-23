@@ -24,6 +24,24 @@
     </div>
 </div>
 
+@if (ViewBag.ErrorMessage != null)
+{
+    <script>
+        $(document).ready(function() {
+            showToaster('@ViewBag.ErrorMessage', 'error');
+        });
+    </script>
+}
+
+@if (ViewBag.SuccessMessage != null)
+{
+    <script>
+        $(document).ready(function() {
+            showToaster('@ViewBag.SuccessMessage', 'success');
+        });
+    </script>
+}
+
 <style>
     body {
         font-family: Arial, sans-serif;

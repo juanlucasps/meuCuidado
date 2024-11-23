@@ -1,8 +1,7 @@
-﻿using meuCuidado.Dominio.Models;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 
-namespace meuCuidado
+namespace meuCuidado.Dominio.Models
 {
     public class MeuCuidadoDbContext : DbContext
     {

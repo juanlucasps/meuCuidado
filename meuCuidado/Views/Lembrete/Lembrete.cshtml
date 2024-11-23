@@ -5,14 +5,29 @@
 }
 
 <div class="container">
+    <!-- Selectbox para escolher a pessoa -->
+    <div class="select-container text-right" style="margin-bottom: 20px; display: flex; justify-content: flex-end; align-items: center;">
+        <select id="selectPessoa" class="form-control d-inline-block" style="width: auto;">
+            <option value="Todos">Todos</option>
+            <option value="Maria">Maria</option>
+            <option value="Josefa">Josefa</option>
+            <option value="Abraão">Abraão</option>
+        </select>
+        <button id="addPersonButton" class="btn btn-light ml-2" style="border-radius: 50%; width: 30px; height: 30px; padding: 0; font-size: 20px; display: flex; justify-content: center; align-items: center; background-color: #a8dadc; border: none; color: white;">
+            +
+        </button>
+    </div>
+
     <div id="calendar">
         <div class="calendar-header">
-            <button id="prevMonth" class="btn btn-light">&lt;</button>
+            <button id="prevMonth" class="btn btn-light calendar-btn">&lt;</button>
             <h3 id="monthYear"></h3>
-            <button id="nextMonth" class="btn btn-light">&gt;</button>
+            <button id="nextMonth" class="btn btn-light calendar-btn">&gt;</button>
         </div>
         <div class="calendar-grid" id="calendarGrid"></div>
     </div>
+
+    <br />
 
     <div id="ListaLembretesContainer">
         @Html.Partial("ListaLembretes", Model)
@@ -71,6 +86,20 @@
         margin-bottom: 20px;
     }
 
+    .calendar-btn {
+        background-color: #a8dadc;
+        border: none;
+        color: white;
+        padding: 8px;
+        font-size: 18px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+        .calendar-btn:hover {
+            background-color: #5a9fa8;
+        }
+
     .calendar-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
@@ -119,7 +148,28 @@
         border: 1px solid #ddd;
         border-radius: 5px;
     }
+
+    .select-container {
+        margin-bottom: 20px;
+    }
+
+    .btn-light {
+        background-color: #a8dadc;
+        border: none;
+        color: white;
+        padding: 8px;
+        font-size: 20px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .btn-light:hover {
+            background-color: #5a9fa8;
+        }
 </style>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

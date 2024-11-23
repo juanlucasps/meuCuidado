@@ -43,7 +43,7 @@ namespace meuCuidado.Controllers
                         NecessidadesEspeciais = false
                     };
 
-                    TempData["Idoso"] = JsonConvert.SerializeObject(idoso);
+                    Session["Idoso"] = JsonConvert.SerializeObject(idoso);
 
                     return RedirectToAction("CadastroTutorEMedicoDoIdoso");
                 }
@@ -61,7 +61,6 @@ namespace meuCuidado.Controllers
                         Senha = pessoa.Usuario.Senha,
                         DataCadasto = DateTime.Now,
                         RelacaoComIdoso = "Tutor",
-                        IdadeDoIdoso = DateTime.Now,
                         NecessidadesEspeciais = false
                     };
 
@@ -79,15 +78,11 @@ namespace meuCuidado.Controllers
 
         public ActionResult CadastroTutorEMedicoDoIdoso()
         {
-            var idosoJson = TempData["Idoso"] as string;
-            if (string.IsNullOrEmpty(idosoJson))
-            {
-                // Se não encontrar os dados, redireciona de volta para a página anterior
-                return RedirectToAction("Cadastro");
-            }
-
             // Desserializa os dados do idoso
-            var idoso = JsonConvert.DeserializeObject<Idoso>(idosoJson);
+            var idoso = JsonConvert.DeserializeObject<Idoso>(Session["Idoso"]?.ToString());
+
+            if (idoso == null)
+                return RedirectToAction("Cadastro");
 
             // Cria um ViewModel para o cadastro de Tutor e Médico
             var viewModel = new CadastroTutorEMedicoDoIdosoViewModel
@@ -103,29 +98,55 @@ namespace meuCuidado.Controllers
         [HttpPost]
         public ActionResult SalvarCadastroTutorEMedico(CadastroTutorEMedicoDoIdosoViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            try
             {
-                // Atualiza o Tutor do Idoso
-                if (viewModel.Idoso != null)
+                // Desserializa os dados do idoso
+                var idoso = JsonConvert.DeserializeObject<Idoso>(Session["Idoso"]?.ToString());
+
+                if (idoso == null)
+                    return RedirectToAction("Cadastro");
+
+                viewModel.Idoso = idoso;
+
+                if (viewModel.Tutor != null)
                 {
-                    viewModel.Idoso.Tutor.Email = viewModel.Tutor.Email; // O e-mail passa a ser igual ao do tutor se for diferente;
-
-                    // Adiciona o médico (caso tenha sido inserido)
-                    foreach (var medico in viewModel.Medicos)
-                    {
-                        _context.Medicos.Add(medico);
-                    }
-
+                    var tutor = viewModel.Tutor;
+                    tutor.IdentificadorUnico = Guid.NewGuid();
+                    tutor.DataCadasto = DateTime.Now;
+                    tutor.Endereco = idoso.Endereco;
+                    tutor.Telefone = idoso.Telefone;
+                    _context.Tutores.Add(tutor);
                     _context.SaveChanges();
-
-                    return RedirectToAction("Sucesso", "Cadastro"); // Redireciona para uma tela de sucesso
+                    idoso.TutorId = tutor.Id;
                 }
+                else
+                    throw new Exception("Os dados do Tutor não foram preenchidos.");
+
+                _context.Idosos.Add(idoso);
+                _context.SaveChanges();
+
+                // Adiciona o médico (caso tenha sido inserido)
+
+                foreach (var medico in viewModel.Medicos)
+                {
+                    medico.IdosoId = idoso.Id;
+                    medico.IdentificadorUnico = Guid.NewGuid();
+                    medico.DataCadasto = DateTime.Now;
+                    medico.Endereco = idoso.Endereco;
+                    medico.Telefone = idoso.Telefone;
+                    medico.Email = idoso.Email;
+                    _context.Medicos.Add(medico);
+                }
+
+                _context.SaveChanges();
+
+                return RedirectToAction("Login", "Login"); // Redireciona para a tela de login
             }
-
-            return View(viewModel); // Retorna a tela de cadastro com erros, caso exista algum
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-
-
 
         // Tela de Cadastro do Profissional
         public ActionResult CadastroProfissional(CadastroViewModel pessoa)
@@ -199,7 +220,7 @@ namespace meuCuidado.Controllers
             return View(cadastroProfissionalViewModel);
         }
 
-        
+
         private void SalvarDocumento(HttpPostedFileBase arquivo, TipoDocumento tipoDocumento, int usuarioId)
         {
             if (arquivo != null && arquivo.ContentLength > 0)

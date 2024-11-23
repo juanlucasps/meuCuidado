@@ -49,6 +49,11 @@ namespace meuCuidado
                 url: "{controller}/{action}",
     defaults: new { controller = "Curriculo", action = "EditarCurriculo" }
 );
+            routes.MapRoute(
+    name: "EditarPerfil",
+                url: "{controller}/{action}/{id}",
+    defaults: new { controller = "Perfil", action = "EditarPerfil" }
+);
         }
     }
 }

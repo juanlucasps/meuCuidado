@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using static meuCuidado.Dominio.Extensions.EnumExtension;
 
 namespace meuCuidado.Controllers
 {
@@ -11,13 +12,16 @@ namespace meuCuidado.Controllers
     {
         public ActionResult Configuracoes()
         {
-            var configuracoes = new List<ConfiguracoesViewModel>
+            string tipoUsuario = Session["TipoUsuario"]?.ToString();
+
+            var configuracoes = new List<ConfiguracoesViewModel> {
+                new ConfiguracoesViewModel { Titulo = "Perfil", Descricao = "Editar informações do perfil", Link = Url.Action("EditarPerfil", "Perfil", new { id = 2 }) }            };
+
+            if (tipoUsuario == GetEnumDescription(TipoUsuario.Cuidador) || tipoUsuario == GetEnumDescription(TipoUsuario.Fisioterapeuta))
             {
-                // TODO: ALTERAR AS ROTAS E REMOVER AS VIEWS
-                new ConfiguracoesViewModel { Titulo = "Perfil", Descricao = "Editar informações do perfil", Link = Url.Action("EditarPerfil", "Perfil") },
-                new ConfiguracoesViewModel { Titulo = "Currículo", Descricao = "Editar ou visualizar currículo", Link = Url.Action("EditarCurriculo", "Curriculo") },
-                new ConfiguracoesViewModel { Titulo = "Avaliações", Descricao = "Visualizar avaliações recebidas", Link = Url.Action("Avaliacoes", "Configuracoes") }
-            };
+                configuracoes.Add(new ConfiguracoesViewModel { Titulo = "Currículo", Descricao = "Editar ou visualizar currículo", Link = Url.Action("EditarCurriculo", "Curriculo") });
+                configuracoes.Add(new ConfiguracoesViewModel { Titulo = "Avaliações", Descricao = "Visualizar avaliações recebidas", Link = Url.Action("Avaliacoes", "Configuracoes") });
+            }
 
             return View(configuracoes);
         }

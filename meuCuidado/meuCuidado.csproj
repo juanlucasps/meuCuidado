@@ -49,6 +49,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.10.1.1\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -184,17 +187,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202409070055456_InitialCreate.cs" />
-    <Compile Include="Migrations\202409070055456_InitialCreate.designer.cs">
-      <DependentUpon>202409070055456_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202409302155574_CriacaoDeDatabase.cs" />
-    <Compile Include="Migrations\202409302155574_CriacaoDeDatabase.designer.cs">
-      <DependentUpon>202409302155574_CriacaoDeDatabase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202410120311276_genero.cs" />
-    <Compile Include="Migrations\202410120311276_genero.designer.cs">
-      <DependentUpon>202410120311276_genero.cs</DependentUpon>
+    <Compile Include="MeuCuidadoDbContext.cs" />
+    <Compile Include="Migrations\202411211840365_new.cs" />
+    <Compile Include="Migrations\202411211840365_new.designer.cs">
+      <DependentUpon>202411211840365_new.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -314,21 +310,15 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202409070055456_InitialCreate.resx">
-      <DependentUpon>202409070055456_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202409302155574_CriacaoDeDatabase.resx">
-      <DependentUpon>202409302155574_CriacaoDeDatabase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202410120311276_genero.resx">
-      <DependentUpon>202410120311276_genero.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\meuCuidado.Dominio\meuCuidado.Dominio.csproj">
       <Project>{3bb6a68c-79ee-4645-9e97-86f36104284b}</Project>
       <Name>meuCuidado.Dominio</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202411211840365_new.resx">
+      <DependentUpon>202411211840365_new.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

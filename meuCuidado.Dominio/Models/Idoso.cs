@@ -14,6 +14,9 @@ namespace meuCuidado.Dominio.Models
         public bool NecessidadesEspeciais { get; set; }
 
         [Required]
+        public int TutorId { get; set; }
+
+        [ForeignKey(nameof(TutorId))]
         public virtual Tutor Tutor { get; set; }
 
         public virtual IList<Medico> Medicos { get; set; }

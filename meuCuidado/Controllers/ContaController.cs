@@ -248,21 +248,7 @@ namespace meuCuidado.Controllers
                         Senha = pessoa.Usuario.Senha,
                         DataCadasto = DateTime.Now,
                         DataNascimento = DateTime.Now,
-                        NecessidadesEspeciais = false,
-                        Tutor = new Tutor
-                        {
-                            IdentificadorUnico = Guid.NewGuid(),
-                            Nome = pessoa.Usuario.Nome,
-                            Email = pessoa.Usuario.Email,
-                            CPF = pessoa.Usuario.CPF,
-                            Endereco = pessoa.Usuario.Endereco,
-                            Telefone = pessoa.Usuario.Telefone,
-                            Senha = pessoa.Usuario.Senha,
-                            DataCadasto = DateTime.Now,
-                            RelacaoComIdoso = TipoUsuario.Tutor.ToString(),
-                            IdadeDoIdoso = DateTime.Now,
-                            NecessidadesEspeciais = false,
-                        }
+                        NecessidadesEspeciais = false
                     };
 
                     _context.Idosos.Add(idoso);
@@ -282,7 +268,6 @@ namespace meuCuidado.Controllers
                         Senha = pessoa.Usuario.Senha,
                         DataCadasto = DateTime.Now,
                         RelacaoComIdoso = "Tutor",
-                        IdadeDoIdoso = DateTime.Now,
                         NecessidadesEspeciais = false
                     };
 

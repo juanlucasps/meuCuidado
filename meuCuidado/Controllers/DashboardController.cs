@@ -8,6 +8,10 @@ namespace meuCuidado.Controllers
         public ActionResult Dashboard()
         {
             var usuarioLogado = User.Identity.Name;
+            var tipoUsuario = Session["TipoUsuario"]?.ToString();
+
+            ViewBag.TipoUsuario = tipoUsuario;
+
             return View(new Usuario());
         }
     }
